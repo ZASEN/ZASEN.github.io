@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="hU53TtoB3-cjkv6fG3QYh11Mpm-dWTnnWSTnv9Dn8Rs">
+  <meta name="msvalidate.01" content="8b8f5ebff3b349ea9050e33da088f3f2">
+  <meta name="baidu-site-verification" content="jB79CmkJh2">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"z0sen.xyz","root":"/","scheme":"Gemini","version":"8.0.0-rc.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="JDK全称Java SE Development kit(JDK)，即Java标准版开发包，是Oracle提供的一套用于开发Java应用程序的开发包，它提供编译，运行Java程序所需要的各种工具和资源，包括Java编译器，Java运行时环境，以及常用的Java类库等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kali更新jdk-8u251">
+<meta property="og:url" content="https://z0sen.xyz/archives/9111.html">
+<meta property="og:site_name" content="Z0SEN&#39;s Blog">
+<meta property="og:description" content="JDK全称Java SE Development kit(JDK)，即Java标准版开发包，是Oracle提供的一套用于开发Java应用程序的开发包，它提供编译，运行Java程序所需要的各种工具和资源，包括Java编译器，Java运行时环境，以及常用的Java类库等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z0sen.xyz/archives/9111/1.png">
+<meta property="og:image" content="https://z0sen.xyz/archives/9111/2.png">
+<meta property="og:image" content="https://z0sen.xyz/archives/9111/3.png">
+<meta property="article:published_time" content="2020-04-24T08:45:53.000Z">
+<meta property="article:modified_time" content="2020-05-07T09:27:38.157Z">
+<meta property="article:author" content="z0sen">
+<meta property="article:tag" content="Kali Linux">
+<meta property="article:tag" content="jdk">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z0sen.xyz/archives/9111/1.png">
+
+<link rel="canonical" href="https://z0sen.xyz/archives/9111.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<link href="https://fonts.loli.net/css?family=Noto+Serif+SC:400,500,700&display=swap&subset=chinese-simplified" rel="stylesheet">
+  <title>Kali更新jdk-8u251 | Z0SEN's Blog</title>
+  
+    <script>
+      function sendPageView() {
+        if (CONFIG.hostname !== location.hostname) return;
+        var uid = localStorage.getItem('uid') || (Math.random() + '.' + Math.random());
+        localStorage.setItem('uid', uid);
+        navigator.sendBeacon('https://www.google-analytics.com/collect', new URLSearchParams({
+          v  : 1,
+          tid: 'UA-163327487-1',
+          cid: uid,
+          t  : 'pageview',
+          dp : encodeURIComponent(location.pathname)
+        }));
+      }
+      document.addEventListener('pjax:complete', sendPageView);
+      sendPageView();
+    </script>
+
+
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?1320d6f95ec224e93756a6d5a618b53a";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Z0SEN's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">10</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+<div id="tp-weather-widget"></div>
+  <script>
+    (function(a,h,g,f,e,d,c,b){b=function(){d=h.createElement(g);c=h.getElementsByTagName(g)[0];d.src=e;d.charset="utf-8";d.async=1;c.parentNode.insertBefore(d,c)};a["SeniverseWeatherWidgetObject"]=f;a[f]||(a[f]=function(){(a[f].q=a[f].q||[]).push(arguments)});a[f].l=+new Date();if(a.attachEvent){a.attachEvent("onload",b)}else{a.addEventListener("load",b,false)}}(window,document,"script","SeniverseWeatherWidget","//cdn.sencdn.com/widget2/static/js/bundle.js?t="+parseInt((new Date().getTime() / 100000000).toString(),10)));
+    window.SeniverseWeatherWidget('show', {
+      flavor: "bubble",
+      location: "WX4FBXXFKE4F",
+      geolocation: true,
+      language: "zh-Hans",
+      unit: "c",
+      theme: "auto",
+      token: "4a75f5fb-0844-46d5-b5c4-0113f5153fcc",
+      hover: "enabled",
+      container: "tp-weather-widget"
+    })
+  </script>
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://z0sen.xyz/archives/9111.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="z0sen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Z0SEN's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Kali更新jdk-8u251
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-24 16:45:53" itemprop="dateCreated datePublished" datetime="2020-04-24T16:45:53+08:00">2020-04-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-05-07 17:27:38" itemprop="dateModified" datetime="2020-05-07T17:27:38+08:00">2020-05-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">web安全</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/archives/9111.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/archives/9111.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.8k</span>
+            </span>
+            <div class="post-description">JDK全称Java SE Development kit(JDK)，即Java标准版开发包，是Oracle提供的一套用于开发Java应用程序的开发包，它提供编译，运行Java程序所需要的各种工具和资源，包括Java编译器，Java运行时环境，以及常用的Java类库等。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <div class="note info no-icon">
+            <h1 id="为啥突然写这篇文章？"><a href="#为啥突然写这篇文章？" class="headerlink" title="为啥突然写这篇文章？"></a>为啥突然写这篇文章？</h1><p>今天打开尘封已久的 Burpsuite 时给我来了个弹窗，如下图<br><img src="/archives/9111/1.png" class=""><br>根据博主的英语水平我jio的它说的是：你的jre版本我们(burp)没有测试过，你用的时候阔能会出毛病。<br>emmm，然后事实证明确实出了毛病，使用的时候发现端口监听勾不上了</p>
+          </div>
+<p>第一时间当然是查看当前的java版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
+<p>然后发现丫的我就没见过这版本号</p>
+<img src="/archives/9111/2.png" class="">
+<p>后来查了一下啥是OpenJDK，得到了这篇文章：<span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC80NDFhYTFhOTc2YjM=">OpenJDK与JDK的区别分析<i class="fa fa-external-link-alt"></i></span></p>
+<p>话不多说，上正题</p>
+<h1 id="1-卸载原装jdk"><a href="#1-卸载原装jdk" class="headerlink" title="1. 卸载原装jdk"></a>1. 卸载原装jdk</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">which java  #查看JDK的安装路径</span><br><span class="line">sudo rm -rf &#x2F;usr&#x2F;bin&#x2F;java   # 这里的路径即为上一条命令返回的路径，自行修改</span><br></pre></td></tr></table></figure>
+
+<h1 id="2-下载JDK"><a href="#2-下载JDK" class="headerlink" title="2. 下载JDK"></a>2. 下载JDK</h1><ul>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly93d3cub3JhY2xlLmNvbS9qYXZhL3RlY2hub2xvZ2llcy9qYXZhc2UtamRrOC1kb3dubG9hZHMuaHRtbA==">Oracle官方下载地址<i class="fa fa-external-link-alt"></i></span><br>ps: 下载<code>Linux x64 Compressed Archive</code>这个版本，好像需要注册帐号，登录才能下载</p>
+</li>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly9wYW4uYmFpZHUuY29tL3MvMXBLZXVVV1Rjb1dPWEJTOHUwVXhfUkE=">百度网盘<i class="fa fa-external-link-alt"></i></span><br>提取码：iouq<br>我也想用蓝奏云，无奈这个包186m，上传超过100m的文件要充钱，我的钱拿去百度网盘自动续费了。。。</p>
+</li>
+</ul>
+<h1 id="3-建立目录并解压文件"><a href="#3-建立目录并解压文件" class="headerlink" title="3. 建立目录并解压文件"></a>3. 建立目录并解压文件</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p &#x2F;usr&#x2F;local&#x2F;java</span><br><span class="line">sudo cp jdk-8u251-linux-x64.tar.gz &#x2F;usr&#x2F;local&#x2F;java</span><br><span class="line">cd &#x2F;usr&#x2F;local&#x2F;java</span><br><span class="line">sudo tar xzvf jdk-8u251-linux-x64.tar.gz</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-配置环境变量"><a href="#4-配置环境变量" class="headerlink" title="4. 配置环境变量"></a>4. 配置环境变量</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo mousepad &#x2F;etc&#x2F;profile</span><br><span class="line"># 复制以下代码到文件结尾</span><br><span class="line">JAVA_HOME&#x3D;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251</span><br><span class="line">PATH&#x3D;$PATH:$HOME&#x2F;bin:$JAVA_HOME&#x2F;bin</span><br><span class="line">export JAVA_HOME</span><br><span class="line">export PATH</span><br></pre></td></tr></table></figure>
+
+<h1 id="5-告诉系统Java的位置"><a href="#5-告诉系统Java的位置" class="headerlink" title="5. 告诉系统Java的位置"></a>5. 告诉系统Java的位置</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo update-alternatives --install &quot;&#x2F;usr&#x2F;bin&#x2F;java&quot; &quot;java&quot; &quot;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;java&quot; 1</span><br><span class="line">sudo update-alternatives --install &quot;&#x2F;usr&#x2F;bin&#x2F;javac&quot; &quot;javac&quot; &quot;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javac&quot; 1</span><br><span class="line">sudo update-alternatives --install &quot;&#x2F;usr&#x2F;bin&#x2F;javaws&quot; &quot;javaws&quot; &quot;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javaws&quot; 1</span><br></pre></td></tr></table></figure>
+
+<h1 id="6-设置为默认JDK"><a href="#6-设置为默认JDK" class="headerlink" title="6. 设置为默认JDK"></a>6. 设置为默认JDK</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo update-alternatives --set java &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;java</span><br><span class="line">sudo update-alternatives --set javac &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javac</span><br><span class="line">sudo update-alternatives --set javaws &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javaws</span><br></pre></td></tr></table></figure>
+
+<h1 id="7-重新载入profile"><a href="#7-重新载入profile" class="headerlink" title="7. 重新载入profile"></a>7. 重新载入profile</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source &#x2F;etc&#x2F;profile</span><br></pre></td></tr></table></figure>
+
+<h1 id="8-验证是否安装成功"><a href="#8-验证是否安装成功" class="headerlink" title="8. 验证是否安装成功"></a>8. 验证是否安装成功</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">java -version</span><br><span class="line">javac -version</span><br></pre></td></tr></table></figure>
+<img src="/archives/9111/3.png" class="">
+
+<p>参考链接：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI5MzQzMjAxL2FydGljbGUvZGV0YWlscy81MTkyNjQzMA==">kali（ubuntu）linux Oracle jdk 8安装<i class="fa fa-external-link-alt"></i></span></p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章推荐</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\archives\46925.html" rel="bookmark">Kali-2020.1b安装那些事儿</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\archives\60505.html" rel="bookmark">kali安装Docker并配置Vulhub</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\archives\53005.html" rel="bookmark">Kali配置问题汇总</a></div>
+    </li>
+  </ul>
+
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------　　　　本文结束　<i class="fa fa-flag"></i>　感谢阅读　　　　-------------</div>
+    
+</div>
+
+
+<div style="text-align: center"><span id="jrsc" >正在加载今日诗词....</span></div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Kali-Linux/" rel="tag"><i class="fa fa-tag"></i> Kali Linux</a>
+              <a href="/tags/jdk/" rel="tag"><i class="fa fa-tag"></i> jdk</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/archives/574.html" rel="prev" title="VMware安装Ubuntu 20.04 LTS图解">
+      <i class="fa fa-chevron-left"></i> VMware安装Ubuntu 20.04 LTS图解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/archives/53005.html" rel="next" title="Kali配置问题汇总">
+      Kali配置问题汇总 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E5%95%A5%E7%AA%81%E7%84%B6%E5%86%99%E8%BF%99%E7%AF%87%E6%96%87%E7%AB%A0%EF%BC%9F"><span class="nav-text">为啥突然写这篇文章？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%8D%B8%E8%BD%BD%E5%8E%9F%E8%A3%85jdk"><span class="nav-text">1. 卸载原装jdk</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E4%B8%8B%E8%BD%BDJDK"><span class="nav-text">2. 下载JDK</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%BB%BA%E7%AB%8B%E7%9B%AE%E5%BD%95%E5%B9%B6%E8%A7%A3%E5%8E%8B%E6%96%87%E4%BB%B6"><span class="nav-text">3. 建立目录并解压文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-text">4. 配置环境变量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E5%91%8A%E8%AF%89%E7%B3%BB%E7%BB%9FJava%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-text">5. 告诉系统Java的位置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-%E8%AE%BE%E7%BD%AE%E4%B8%BA%E9%BB%98%E8%AE%A4JDK"><span class="nav-text">6. 设置为默认JDK</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-%E9%87%8D%E6%96%B0%E8%BD%BD%E5%85%A5profile"><span class="nav-text">7. 重新载入profile</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-%E9%AA%8C%E8%AF%81%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85%E6%88%90%E5%8A%9F"><span class="nav-text">8. 验证是否安装成功</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="z0sen"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">z0sen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3phc2Vu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zasen"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cDovL3FxLmNuLmhuL3d0Ng==" title="E-Mail → http:&#x2F;&#x2F;qq.cn.hn&#x2F;wt6"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">z0sen</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">23k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el         : '#valine-comments',
+      path       : location.pathname,
+    }, {"enable":true,"appId":"eSShQPVz996SWeAvav1vBFQU-9Nh9j0Va","appKey":"X4SopVLoPcMmYFNvszxFG7YX","notify":false,"verify":false,"placeholder":"想叭叭啥，快说","avatar":"wavatar","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":false,"serverURLs":null}
+    ));
+  }, window.Valine);
+});
+</script>
+<script src="//sdk.jinrishici.com/v2/browser/jinrishici.js"></script>
+<script>
+  console.log('今日诗词 - 开始加载...');
+  jinrishici.load((result) => {
+    let jrsc = document.getElementById('jrsc');
+    if (jrsc) {
+      console.log('今日诗词 - 标签获取成功.');
+    } else {
+      console.log('今日诗词 - 标签获取失败!');
+      return;
+    }
+    const data = result.data;
+    let author = data.origin.author;
+    let title = '《' + data.origin.title + '》';
+    let content = data.content.substr(0, data.content.length - 1);
+    let dynasty = data.origin.dynasty.substr(0, data.origin.dynasty.length - 1);
+    jrsc.innerText = content + ' @ ' + dynasty + '·' + author + title;
+    console.log('今日诗词 - 载入完毕.');
+    if (data.origin.author == '李白') {
+      let audio = document.createElement("audio");
+      audio.src = "/ding.mp3";
+      audio.play();
+    }
+  });
+</script><div class="moon-menu">
+  <div class="moon-menu-items">
+    
+    <div class="moon-menu-item" onclick="back2bottom()">
+      <i class='fa fa-chevron-down'></i>    </div>
+    
+    <div class="moon-menu-item" onclick="back2top()">
+      <i class='fa fa-chevron-up'></i>    </div>
+    
+  </div>
+  <div class="moon-menu-button">
+    <svg class="moon-menu-bg">
+      <circle class="moon-menu-cricle" cx="50%" cy="50%" r="44%"></circle>
+      <circle class="moon-menu-border" cx="50%" cy="50%" r="48%"></circle>
+    </svg>
+    <div class="moon-menu-content">
+      <div class="moon-menu-icon"><i class='fas fa-ellipsis-v'></i></div>
+      <div class="moon-menu-text"></div>
+    </div>
+  </div>
+</div><script src="/js/injector.js"></script>
+    </div>
+</body>
+</html>
