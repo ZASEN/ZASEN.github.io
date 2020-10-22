@@ -9,6 +9,13 @@
   </url>
   
   <url>
+    <loc>https://z0sen.xyz/archives/53005.html</loc>
+    
+    <lastmod>2020-10-22</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://z0sen.xyz/archives/60505.html</loc>
     
     <lastmod>2020-10-22</lastmod>
@@ -17,13 +24,6 @@
   
   <url>
     <loc>https://z0sen.xyz/about/index.html</loc>
-    
-    <lastmod>2020-10-22</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://z0sen.xyz/archives/53005.html</loc>
     
     <lastmod>2020-10-22</lastmod>
     
@@ -130,6 +130,13 @@
   </url>
   
   <url>
+    <loc>https://z0sen.xyz/tags/Markdown/</loc>
+    <lastmod>2020-10-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://z0sen.xyz/tags/Docker/</loc>
     <lastmod>2020-10-22</lastmod>
     <changefreq>daily</changefreq>
@@ -138,13 +145,6 @@
   
   <url>
     <loc>https://z0sen.xyz/tags/jdk/</loc>
-    <lastmod>2020-10-22</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://z0sen.xyz/tags/Markdown/</loc>
     <lastmod>2020-10-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
