@@ -272,52 +272,6 @@
       </tags>
   </entry>
   <entry>
-    <title>kali安装Docker并配置Vulhub</title>
-    <url>/archives/60505.html</url>
-    <content><![CDATA[<h1 id="一、安装Docker"><a href="#一、安装Docker" class="headerlink" title="一、安装Docker"></a>一、安装Docker</h1><h2 id="1-卸载旧版本Docker"><a href="#1-卸载旧版本Docker" class="headerlink" title="1. 卸载旧版本Docker"></a>1. 卸载旧版本Docker</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get remove docker docker-engine docker.io containerd runc</span><br></pre></td></tr></table></figure>
-
-<h2 id="2-配置软件源"><a href="#2-配置软件源" class="headerlink" title="2. 配置软件源"></a>2. 配置软件源</h2><h3 id="2-1-更新软件源并安装依赖包"><a href="#2-1-更新软件源并安装依赖包" class="headerlink" title="2.1 更新软件源并安装依赖包"></a>2.1 更新软件源并安装依赖包</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line"></span><br><span class="line">sudo apt-get install \</span><br><span class="line">apt-transport-https \</span><br><span class="line">ca-certificates \</span><br><span class="line">curl \</span><br><span class="line">gnupg-agent \</span><br><span class="line">software-properties-common</span><br></pre></td></tr></table></figure>
-<h3 id="2-2-添加Docker官方软件包密钥"><a href="#2-2-添加Docker官方软件包密钥" class="headerlink" title="2.2 添加Docker官方软件包密钥"></a>2.2 添加Docker官方软件包密钥</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl -fsSL https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;debian&#x2F;gpg | sudo apt-key add -</span><br></pre></td></tr></table></figure>
-
-<p>验证密钥是否安装成功</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo apt-key fingerprint 0EBFCD88</span><br><span class="line"></span><br><span class="line">pub   4096R&#x2F;0EBFCD88 2017-02-22</span><br><span class="line">      Key fingerprint &#x3D; 9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88</span><br><span class="line">uid                  Docker Release (CE deb) &lt;docker@docker.com&gt;</span><br><span class="line">sub   4096R&#x2F;F273FCD8 2017-02-22</span><br></pre></td></tr></table></figure>
-<h3 id="2-3-添加软件源"><a href="#2-3-添加软件源" class="headerlink" title="2.3 添加软件源"></a>2.3 添加软件源</h3><p>查询当前系统所基于的Debian版本</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cat &#x2F;proc&#x2F;version</span><br></pre></td></tr></table></figure>
-<p>得到如图反馈</p>
-<img src="/archives/60505/kali-version.png" class="">
-
-<p>通过查询得知 Debian 9 对应的代号为 stretch ，之后执行以下命令写入docker软件源（其中 stretch 根据查询得到的代号自行修改）</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo &#39;deb https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;debian stretch stable&#39; | sudo tee -a &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;docker.list</span><br></pre></td></tr></table></figure>
-<p>正常写入之后如图</p>
-<img src="/archives/60505/sources-list.png" class="">
-
-<h2 id="3-安装Docker"><a href="#3-安装Docker" class="headerlink" title="3. 安装Docker"></a>3. 安装Docker</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install docker-ce docker-ce-cli containerd.io -y</span><br></pre></td></tr></table></figure>
-
-<p>安装之后可以配置一下Docker镜像加速</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mkdir -p &#x2F;etc&#x2F;docker</span><br><span class="line">sudo tee &#x2F;etc&#x2F;docker&#x2F;daemon.json &lt;&lt;-&#39;EOF&#39;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;http:&#x2F;&#x2F;hub-mirror.c.163.com&quot;]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
-<p>ps：阿里云有免费的加速服务，登录阿里云帐号-容器镜像服务-镜像加速器</p>
-<p>配置好后执行以下命令进行测试</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo docker run hello-world</span><br></pre></td></tr></table></figure>
-<p>正常反馈如图</p>
-<img src="/archives/60505/hello-world.png" class="">
-
-<h2 id="4-卸载Docker"><a href="#4-卸载Docker" class="headerlink" title="4. 卸载Docker"></a>4. 卸载Docker</h2><h3 id="4-1-卸载软件"><a href="#4-1-卸载软件" class="headerlink" title="4.1 卸载软件"></a>4.1 卸载软件</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get purge docker-ce docker-ce-cli containerd.io</span><br></pre></td></tr></table></figure>
-<h3 id="4-2-删除镜像、容器、自定义配置等文件"><a href="#4-2-删除镜像、容器、自定义配置等文件" class="headerlink" title="4.2 删除镜像、容器、自定义配置等文件"></a>4.2 删除镜像、容器、自定义配置等文件</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo rm -rf &#x2F;var&#x2F;lib&#x2F;docker</span><br></pre></td></tr></table></figure>
-
-<h1 id="二、安装Docker-Compose"><a href="#二、安装Docker-Compose" class="headerlink" title="二、安装Docker-Compose"></a>二、安装Docker-Compose</h1><h2 id="安装Docker-Compose"><a href="#安装Docker-Compose" class="headerlink" title="安装Docker-Compose"></a>安装Docker-Compose</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo curl -L &quot;https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;download&#x2F;1.25.5&#x2F;docker-compose-$(uname -s)-$(uname -m)&quot; -o &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line">sudo chmod +x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line">docker-compose -v</span><br></pre></td></tr></table></figure>
-<p>回显版本号则安装成功</p>
-<h2 id="卸载Docker-Compose"><a href="#卸载Docker-Compose" class="headerlink" title="卸载Docker-Compose"></a>卸载Docker-Compose</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo rm &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br></pre></td></tr></table></figure>
-
-<h1 id="三、配置Vulhub"><a href="#三、配置Vulhub" class="headerlink" title="三、配置Vulhub"></a>三、配置Vulhub</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#下载靶场</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;vulhub&#x2F;vulhub.git</span><br><span class="line"></span><br><span class="line">#看看都有哪些靶场</span><br><span class="line">ls vulhub</span><br><span class="line"></span><br><span class="line">#选择一个靶场，比如struts2的系列漏洞</span><br><span class="line">cd vulhub&#x2F;struts2&#x2F;s2-057&#x2F;</span><br><span class="line"></span><br><span class="line">#启动靶场</span><br><span class="line">sudo docker-compose up -d</span><br><span class="line"></span><br><span class="line">#关闭靶场</span><br><span class="line">sudo docker-compose down</span><br><span class="line"></span><br><span class="line">#清理环境</span><br><span class="line">sudo docker rm $(docker ps -a -q)</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>web安全</category>
-      </categories>
-      <tags>
-        <tag>Kali Linux</tag>
-        <tag>Docker</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Linux基础知识</title>
     <url>/archives/29244.html</url>
     <content><![CDATA[<h1 id="0x01-常见shell命令"><a href="#0x01-常见shell命令" class="headerlink" title="0x01 常见shell命令"></a>0x01 常见shell命令</h1><ul>
@@ -383,6 +337,108 @@
       </categories>
       <tags>
         <tag>Ubuntu</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>kali安装Docker并配置Vulhub</title>
+    <url>/archives/60505.html</url>
+    <content><![CDATA[<h1 id="一、安装Docker"><a href="#一、安装Docker" class="headerlink" title="一、安装Docker"></a>一、安装Docker</h1><h2 id="1-卸载旧版本Docker"><a href="#1-卸载旧版本Docker" class="headerlink" title="1. 卸载旧版本Docker"></a>1. 卸载旧版本Docker</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get remove docker docker-engine docker.io containerd runc</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-配置软件源"><a href="#2-配置软件源" class="headerlink" title="2. 配置软件源"></a>2. 配置软件源</h2><h3 id="2-1-更新软件源并安装依赖包"><a href="#2-1-更新软件源并安装依赖包" class="headerlink" title="2.1 更新软件源并安装依赖包"></a>2.1 更新软件源并安装依赖包</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line"></span><br><span class="line">sudo apt-get install \</span><br><span class="line">apt-transport-https \</span><br><span class="line">ca-certificates \</span><br><span class="line">curl \</span><br><span class="line">gnupg-agent \</span><br><span class="line">software-properties-common</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-添加Docker官方软件包密钥"><a href="#2-2-添加Docker官方软件包密钥" class="headerlink" title="2.2 添加Docker官方软件包密钥"></a>2.2 添加Docker官方软件包密钥</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl -fsSL https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;debian&#x2F;gpg | sudo apt-key add -</span><br></pre></td></tr></table></figure>
+
+<p>验证密钥是否安装成功</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo apt-key fingerprint 0EBFCD88</span><br><span class="line"></span><br><span class="line">pub   4096R&#x2F;0EBFCD88 2017-02-22</span><br><span class="line">      Key fingerprint &#x3D; 9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88</span><br><span class="line">uid                  Docker Release (CE deb) &lt;docker@docker.com&gt;</span><br><span class="line">sub   4096R&#x2F;F273FCD8 2017-02-22</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-添加软件源"><a href="#2-3-添加软件源" class="headerlink" title="2.3 添加软件源"></a>2.3 添加软件源</h3><p>查询当前系统所基于的Debian版本</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cat &#x2F;proc&#x2F;version</span><br></pre></td></tr></table></figure>
+<p>得到如图反馈</p>
+<img src="/archives/60505/kali-version.png" class="">
+
+<p>通过查询得知 Debian 9 对应的代号为 stretch ，之后执行以下命令写入docker软件源（其中 stretch 根据查询得到的代号自行修改）</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo &#39;deb https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;debian stretch stable&#39; | sudo tee -a &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;docker.list</span><br></pre></td></tr></table></figure>
+<p>正常写入之后如图</p>
+<img src="/archives/60505/sources-list.png" class="">
+
+<h2 id="3-安装Docker"><a href="#3-安装Docker" class="headerlink" title="3. 安装Docker"></a>3. 安装Docker</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install docker-ce docker-ce-cli containerd.io -y</span><br></pre></td></tr></table></figure>
+
+<p>安装之后可以配置一下Docker镜像加速</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mkdir -p &#x2F;etc&#x2F;docker</span><br><span class="line">sudo tee &#x2F;etc&#x2F;docker&#x2F;daemon.json &lt;&lt;-&#39;EOF&#39;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;http:&#x2F;&#x2F;hub-mirror.c.163.com&quot;]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+<p>ps：阿里云有免费的加速服务，登录阿里云帐号-容器镜像服务-镜像加速器</p>
+<p>配置好后执行以下命令进行测试</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo docker run hello-world</span><br></pre></td></tr></table></figure>
+<p>正常反馈如图</p>
+<img src="/archives/60505/hello-world.png" class="">
+
+<h2 id="4-卸载Docker"><a href="#4-卸载Docker" class="headerlink" title="4. 卸载Docker"></a>4. 卸载Docker</h2><h3 id="4-1-卸载软件"><a href="#4-1-卸载软件" class="headerlink" title="4.1 卸载软件"></a>4.1 卸载软件</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get purge docker-ce docker-ce-cli containerd.io</span><br></pre></td></tr></table></figure>
+<h3 id="4-2-删除镜像、容器、自定义配置等文件"><a href="#4-2-删除镜像、容器、自定义配置等文件" class="headerlink" title="4.2 删除镜像、容器、自定义配置等文件"></a>4.2 删除镜像、容器、自定义配置等文件</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo rm -rf &#x2F;var&#x2F;lib&#x2F;docker</span><br></pre></td></tr></table></figure>
+
+<h1 id="二、安装Docker-Compose"><a href="#二、安装Docker-Compose" class="headerlink" title="二、安装Docker-Compose"></a>二、安装Docker-Compose</h1><h2 id="安装Docker-Compose"><a href="#安装Docker-Compose" class="headerlink" title="安装Docker-Compose"></a>安装Docker-Compose</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo curl -L &quot;https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;download&#x2F;1.25.5&#x2F;docker-compose-$(uname -s)-$(uname -m)&quot; -o &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line">sudo chmod +x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line">docker-compose -v</span><br></pre></td></tr></table></figure>
+<p>回显版本号则安装成功</p>
+<h2 id="卸载Docker-Compose"><a href="#卸载Docker-Compose" class="headerlink" title="卸载Docker-Compose"></a>卸载Docker-Compose</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo rm &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br></pre></td></tr></table></figure>
+
+<h1 id="三、配置Vulhub"><a href="#三、配置Vulhub" class="headerlink" title="三、配置Vulhub"></a>三、配置Vulhub</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#下载靶场</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;vulhub&#x2F;vulhub.git</span><br><span class="line"></span><br><span class="line">#看看都有哪些靶场</span><br><span class="line">ls vulhub</span><br><span class="line"></span><br><span class="line">#选择一个靶场，比如struts2的系列漏洞</span><br><span class="line">cd vulhub&#x2F;struts2&#x2F;s2-057&#x2F;</span><br><span class="line"></span><br><span class="line">#启动靶场</span><br><span class="line">sudo docker-compose up -d</span><br><span class="line"></span><br><span class="line">#关闭靶场</span><br><span class="line">sudo docker-compose down</span><br><span class="line"></span><br><span class="line">#清理环境</span><br><span class="line">sudo docker rm $(docker ps -a -q)</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>web安全</category>
+      </categories>
+      <tags>
+        <tag>Kali Linux</tag>
+        <tag>Docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Kali配置问题汇总</title>
+    <url>/archives/53005.html</url>
+    <content><![CDATA[<h1 id="Q1：E-Sub-process-usr-bin-dpkg-returned-an-error-code-1"><a href="#Q1：E-Sub-process-usr-bin-dpkg-returned-an-error-code-1" class="headerlink" title="Q1：E: Sub-process /usr/bin/dpkg returned an error code (1)"></a>Q1：E: Sub-process /usr/bin/dpkg returned an error code (1)</h1><img src="/archives/53005/firmware.png" class="">
+<p>解决方法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mousepad &#x2F;var&#x2F;lib&#x2F;dpkg&#x2F;status</span><br></pre></td></tr></table></figure>
+<p>删除发生错误的包即可</p>
+<img src="/archives/53005/a1.png" class="">
+
+<h1 id="Q2：缺少工具"><a href="#Q2：缺少工具" class="headerlink" title="Q2：缺少工具"></a>Q2：缺少工具</h1><p>解决方法：</p>
+<ol>
+<li>直接使用<code>apt-get</code>进行安装</li>
+<li>安装工具集<br>Kali Linux 2019.03开始对默认工具集进行重大更改，默认工具集将分为三个主要类别<br>kali-linux-default，渗透测试人员必不可少的工具<br>kali-linux-large，面对一系列更广泛又不寻常的情况的渗透测试<br>kali-linux-everything，所有黑客工具<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get install -y kali-linux-everything</span><br></pre></td></tr></table></figure>
+<img src="/archives/53005/a2.png" class="">
+
+</li>
+</ol>
+<h1 id="Q3：如何在kali上使用破解版burpsuite"><a href="#Q3：如何在kali上使用破解版burpsuite" class="headerlink" title="Q3：如何在kali上使用破解版burpsuite"></a>Q3：如何在kali上使用破解版burpsuite</h1><div class="note info no-icon">
+            <p>准备工作：<br><a href="https://z0sen.xyz/archives/9111.html">配置好jdk</a><br><span class="exturl" data-url="aHR0cHM6Ly9wYW4uYmFpZHUuY29tL3MvMXdvUWJmYUdrUjdJQnc5OFVCc2ppa3c=">Burpsuite<i class="fa fa-external-link-alt"></i></span> 提取码:gm3i</p>
+          </div>
+<h2 id="1-将burpsuite移动到-usr-bin-文件夹下"><a href="#1-将burpsuite移动到-usr-bin-文件夹下" class="headerlink" title="1. 将burpsuite移动到/usr/bin/文件夹下"></a>1. 将burpsuite移动到/usr/bin/文件夹下</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mv burp-loader-keygen.jar burpsuite_pro_v1.7.37.jar -t &#x2F;usr&#x2F;bin&#x2F;</span><br></pre></td></tr></table></figure>
+<h2 id="2-编写运行脚本"><a href="#2-编写运行脚本" class="headerlink" title="2. 编写运行脚本"></a>2. 编写运行脚本</h2><ul>
+<li>先删除自带的免费burpsuite<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo rm -rf burpsuite</span><br></pre></td></tr></table></figure></li>
+<li>编写脚本<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mousepad burpsuite</span><br><span class="line">#写入如下脚本并保存</span><br><span class="line">#!&#x2F;bin&#x2F;sh</span><br><span class="line">java -Xbootclasspath&#x2F;p:&#x2F;usr&#x2F;bin&#x2F;burp-loader-keygen.jar -jar &#x2F;usr&#x2F;bin&#x2F;burpsuite_pro_v1.7.37.jar</span><br></pre></td></tr></table></figure>
+<img src="/archives/53005/burp1.png" class="">
+保存退出后赋予权限<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo chmod +x burpsuite</span><br></pre></td></tr></table></figure></li>
+<li>先运行一次loader激活burpsuite<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo burp-loader-keygen.jar</span><br></pre></td></tr></table></figure>
+ps:如果是xfce桌面环境需要在编辑完快捷方式之后在菜单栏中打开burpsuite然后复制loader中的字段去激活，而不是直接用loader去run<h2 id="3-编辑快捷方式"><a href="#3-编辑快捷方式" class="headerlink" title="3. 编辑快捷方式"></a>3. 编辑快捷方式</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;share&#x2F;applications</span><br><span class="line">sudo mousepad kali-burpsuite.desktop</span><br><span class="line">将Exec&#x3D;sh -c &quot;java -jar &#x2F;usr&#x2F;bin&#x2F;burpsuite&quot;改为Exec&#x3D;sh -c &quot;&#x2F;usr&#x2F;bin&#x2F;burpsuite&quot;</span><br></pre></td></tr></table></figure>
+之后就可以通过快捷方式运行了</li>
+</ul>
+<h1 id="Q4：kali修改DNS"><a href="#Q4：kali修改DNS" class="headerlink" title="Q4：kali修改DNS"></a>Q4：kali修改DNS</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#编辑文件</span><br><span class="line">sudo mousepad &#x2F;etc&#x2F;resolv.conf</span><br><span class="line"></span><br><span class="line">#添加DNS</span><br><span class="line">nameserver 114.114.114.114</span><br><span class="line">nameserver 8.8.8.8</span><br></pre></td></tr></table></figure>
+
+<h1 id="Q5：kali怎么使用ssr"><a href="#Q5：kali怎么使用ssr" class="headerlink" title="Q5：kali怎么使用ssr"></a>Q5：kali怎么使用ssr</h1><p>这里直接pass掉图形化的electron-ssr，我就没成功运行过<br>下面来介绍一下通过脚本运行ssr实现科学上网</p>
+<h2 id="1-下载安装脚本并赋予权限"><a href="#1-下载安装脚本并赋予权限" class="headerlink" title="1. 下载安装脚本并赋予权限"></a>1. 下载安装脚本并赋予权限</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;onlyless.github.io&#x2F;ssr</span><br><span class="line">sudo mv ssr &#x2F;usr&#x2F;local&#x2F;bin</span><br><span class="line">sudo chmod 766 &#x2F;usr&#x2F;local&#x2F;bin&#x2F;ssr</span><br></pre></td></tr></table></figure>
+<img src="/archives/53005/ssr1.png" class="">
+
+<h2 id="2-安装ssr"><a href="#2-安装ssr" class="headerlink" title="2. 安装ssr"></a>2. 安装ssr</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo ssr install</span><br></pre></td></tr></table></figure>
+<p>这里安装有点慢，添加<code>8.8.8.8</code>的DNS会快点</p>
+<h2 id="3-ssr配置"><a href="#3-ssr配置" class="headerlink" title="3. ssr配置"></a>3. ssr配置</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;share&#x2F;shadowsocksr&#x2F;</span><br><span class="line">sudo mousepad config.json</span><br></pre></td></tr></table></figure>
+<img src="/archives/53005/ssr2.png" class="">
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;: &quot;0.0.0.0&quot;,	&#x2F;&#x2F;服务器IP地址</span><br><span class="line">    &quot;server_ipv6&quot;: &quot;::&quot;,</span><br><span class="line">    &quot;server_port&quot;: 8388,	&#x2F;&#x2F;服务器端口</span><br><span class="line">    &quot;local_address&quot;: &quot;127.0.0.1&quot;, </span><br><span class="line">    &quot;local_port&quot;: 1080,</span><br><span class="line"></span><br><span class="line">    &quot;password&quot;: &quot;m&quot;,		&#x2F;&#x2F;密码</span><br><span class="line">    &quot;method&quot;: &quot;aes-128-ctr&quot;,	&#x2F;&#x2F;加密</span><br><span class="line">    &quot;protocol&quot;: &quot;auth_aes128_md5&quot;,	&#x2F;&#x2F;协议</span><br><span class="line">    &quot;protocol_param&quot;: &quot;&quot;,			&#x2F;&#x2F;协议参数</span><br><span class="line">    &quot;obfs&quot;: &quot;plain&quot;,	&#x2F;&#x2F;混淆</span><br><span class="line">    &quot;obfs_param&quot;: &quot;&quot;,	&#x2F;&#x2F;混淆参数</span><br><span class="line">    &quot;speed_limit_per_con&quot;: 0,</span><br><span class="line">    &quot;speed_limit_per_user&quot;: 0,</span><br><span class="line"></span><br><span class="line">    &quot;additional_ports&quot; : &#123;&#125;, </span><br><span class="line">    &quot;additional_ports_only&quot; : false, </span><br><span class="line">    &quot;timeout&quot;: 120,</span><br><span class="line">    &quot;udp_timeout&quot;: 60,</span><br><span class="line">    &quot;dns_ipv6&quot;: false,</span><br><span class="line">    &quot;connect_verbose_info&quot;: 0,</span><br><span class="line">    &quot;redirect&quot;: &quot;&quot;,</span><br><span class="line">    &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>根据自己的节点信息进行修改之后保存</p>
+<h2 id="4-浏览器安装代理插件Proxy-SwitchyOmega"><a href="#4-浏览器安装代理插件Proxy-SwitchyOmega" class="headerlink" title="4. 浏览器安装代理插件Proxy SwitchyOmega"></a>4. 浏览器安装代理插件Proxy SwitchyOmega</h2><p>火狐浏览器-附加组件中搜索安装即可<br>配置如图</p>
+<img src="/archives/53005/ssr3.png" class="">
+<p>之后在终端键入<code>ssr start</code>，浏览器切换代理为proxy即可使用</p>
+<img src="/archives/53005/ssr4.png" class="">
+
+<h1 id="Q6-给git设置代理"><a href="#Q6-给git设置代理" class="headerlink" title="Q6:给git设置代理"></a>Q6:给git设置代理</h1><h2 id="1-设置全局代理"><a href="#1-设置全局代理" class="headerlink" title="1.设置全局代理"></a>1.设置全局代理</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git config --global http.proxy &#39;socks5:&#x2F;&#x2F;127.0.0.1:1080&#39;</span><br><span class="line">git config --global https.proxy &#39;socks5:&#x2F;&#x2F;127.0.0.1:1080&#39;</span><br></pre></td></tr></table></figure>
+<h2 id="2-设置针对github-com的全局代理"><a href="#2-设置针对github-com的全局代理" class="headerlink" title="2.设置针对github.com的全局代理"></a>2.设置针对github.com的全局代理</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#只对github.com</span><br><span class="line">git config --global http.https:&#x2F;&#x2F;github.com.proxy socks5:&#x2F;&#x2F;127.0.0.1:1080</span><br><span class="line"></span><br><span class="line">#取消代理</span><br><span class="line">git config --global --unset http.https:&#x2F;&#x2F;github.com.proxy</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>web安全</category>
+      </categories>
+      <tags>
+        <tag>Kali Linux</tag>
       </tags>
   </entry>
   <entry>
@@ -485,6 +541,49 @@
       </categories>
       <tags>
         <tag>Ubuntu</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Kali更新jdk-8u251</title>
+    <url>/archives/9111.html</url>
+    <content><![CDATA[<div class="note info no-icon">
+            <h1 id="为啥突然写这篇文章？"><a href="#为啥突然写这篇文章？" class="headerlink" title="为啥突然写这篇文章？"></a>为啥突然写这篇文章？</h1><p>今天打开尘封已久的 Burpsuite 时给我来了个弹窗，如下图<br><img src="/archives/9111/1.png" class=""><br>根据博主的英语水平我jio的它说的是：你的jre版本我们(burp)没有测试过，你用的时候阔能会出毛病。<br>emmm，然后事实证明确实出了毛病，使用的时候发现端口监听勾不上了</p>
+          </div>
+<p>第一时间当然是查看当前的java版本</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
+<p>然后发现丫的我就没见过这版本号</p>
+<img src="/archives/9111/2.png" class="">
+<p>后来查了一下啥是OpenJDK，得到了这篇文章：<span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC80NDFhYTFhOTc2YjM=">OpenJDK与JDK的区别分析<i class="fa fa-external-link-alt"></i></span></p>
+<p>话不多说，上正题</p>
+<h1 id="1-卸载原装jdk"><a href="#1-卸载原装jdk" class="headerlink" title="1. 卸载原装jdk"></a>1. 卸载原装jdk</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">which java  #查看JDK的安装路径</span><br><span class="line">sudo rm -rf &#x2F;usr&#x2F;bin&#x2F;java   # 这里的路径即为上一条命令返回的路径，自行修改</span><br></pre></td></tr></table></figure>
+
+<h1 id="2-下载JDK"><a href="#2-下载JDK" class="headerlink" title="2. 下载JDK"></a>2. 下载JDK</h1><ul>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly93d3cub3JhY2xlLmNvbS9qYXZhL3RlY2hub2xvZ2llcy9qYXZhc2UtamRrOC1kb3dubG9hZHMuaHRtbA==">Oracle官方下载地址<i class="fa fa-external-link-alt"></i></span><br>ps: 下载<code>Linux x64 Compressed Archive</code>这个版本，好像需要注册帐号，登录才能下载</p>
+</li>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly9wYW4uYmFpZHUuY29tL3MvMXBLZXVVV1Rjb1dPWEJTOHUwVXhfUkE=">百度网盘<i class="fa fa-external-link-alt"></i></span><br>提取码：iouq<br>我也想用蓝奏云，无奈这个包186m，上传超过100m的文件要充钱，我的钱拿去百度网盘自动续费了。。。</p>
+</li>
+</ul>
+<h1 id="3-建立目录并解压文件"><a href="#3-建立目录并解压文件" class="headerlink" title="3. 建立目录并解压文件"></a>3. 建立目录并解压文件</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mkdir -p &#x2F;usr&#x2F;local&#x2F;java</span><br><span class="line">sudo cp jdk-8u251-linux-x64.tar.gz &#x2F;usr&#x2F;local&#x2F;java</span><br><span class="line">cd &#x2F;usr&#x2F;local&#x2F;java</span><br><span class="line">sudo tar xzvf jdk-8u251-linux-x64.tar.gz</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-配置环境变量"><a href="#4-配置环境变量" class="headerlink" title="4. 配置环境变量"></a>4. 配置环境变量</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mousepad &#x2F;etc&#x2F;profile</span><br><span class="line"># 复制以下代码到文件结尾</span><br><span class="line">JAVA_HOME&#x3D;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251</span><br><span class="line">PATH&#x3D;$PATH:$HOME&#x2F;bin:$JAVA_HOME&#x2F;bin</span><br><span class="line">export JAVA_HOME</span><br><span class="line">export PATH</span><br></pre></td></tr></table></figure>
+
+<h1 id="5-告诉系统Java的位置"><a href="#5-告诉系统Java的位置" class="headerlink" title="5. 告诉系统Java的位置"></a>5. 告诉系统Java的位置</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo update-alternatives --install &quot;&#x2F;usr&#x2F;bin&#x2F;java&quot; &quot;java&quot; &quot;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;java&quot; 1</span><br><span class="line">sudo update-alternatives --install &quot;&#x2F;usr&#x2F;bin&#x2F;javac&quot; &quot;javac&quot; &quot;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javac&quot; 1</span><br><span class="line">sudo update-alternatives --install &quot;&#x2F;usr&#x2F;bin&#x2F;javaws&quot; &quot;javaws&quot; &quot;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javaws&quot; 1</span><br></pre></td></tr></table></figure>
+
+<h1 id="6-设置为默认JDK"><a href="#6-设置为默认JDK" class="headerlink" title="6. 设置为默认JDK"></a>6. 设置为默认JDK</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo update-alternatives --set java &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;java</span><br><span class="line">sudo update-alternatives --set javac &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javac</span><br><span class="line">sudo update-alternatives --set javaws &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javaws</span><br></pre></td></tr></table></figure>
+
+<h1 id="7-重新载入profile"><a href="#7-重新载入profile" class="headerlink" title="7. 重新载入profile"></a>7. 重新载入profile</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">source &#x2F;etc&#x2F;profile</span><br></pre></td></tr></table></figure>
+
+<h1 id="8-验证是否安装成功"><a href="#8-验证是否安装成功" class="headerlink" title="8. 验证是否安装成功"></a>8. 验证是否安装成功</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">java -version</span><br><span class="line">javac -version</span><br></pre></td></tr></table></figure>
+<img src="/archives/9111/3.png" class="">
+
+<p>参考链接：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI5MzQzMjAxL2FydGljbGUvZGV0YWlscy81MTkyNjQzMA==">kali（ubuntu）linux Oracle jdk 8安装<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <categories>
+        <category>web安全</category>
+      </categories>
+      <tags>
+        <tag>Kali Linux</tag>
+        <tag>jdk</tag>
       </tags>
   </entry>
   <entry>
@@ -622,105 +721,6 @@
       </categories>
       <tags>
         <tag>Markdown</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Kali更新jdk-8u251</title>
-    <url>/archives/9111.html</url>
-    <content><![CDATA[<div class="note info no-icon">
-            <h1 id="为啥突然写这篇文章？"><a href="#为啥突然写这篇文章？" class="headerlink" title="为啥突然写这篇文章？"></a>为啥突然写这篇文章？</h1><p>今天打开尘封已久的 Burpsuite 时给我来了个弹窗，如下图<br><img src="/archives/9111/1.png" class=""><br>根据博主的英语水平我jio的它说的是：你的jre版本我们(burp)没有测试过，你用的时候阔能会出毛病。<br>emmm，然后事实证明确实出了毛病，使用的时候发现端口监听勾不上了</p>
-          </div>
-<p>第一时间当然是查看当前的java版本</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
-<p>然后发现丫的我就没见过这版本号</p>
-<img src="/archives/9111/2.png" class="">
-<p>后来查了一下啥是OpenJDK，得到了这篇文章：<span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC80NDFhYTFhOTc2YjM=">OpenJDK与JDK的区别分析<i class="fa fa-external-link-alt"></i></span></p>
-<p>话不多说，上正题</p>
-<h1 id="1-卸载原装jdk"><a href="#1-卸载原装jdk" class="headerlink" title="1. 卸载原装jdk"></a>1. 卸载原装jdk</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">which java  #查看JDK的安装路径</span><br><span class="line">sudo rm -rf &#x2F;usr&#x2F;bin&#x2F;java   # 这里的路径即为上一条命令返回的路径，自行修改</span><br></pre></td></tr></table></figure>
-
-<h1 id="2-下载JDK"><a href="#2-下载JDK" class="headerlink" title="2. 下载JDK"></a>2. 下载JDK</h1><ul>
-<li><p><span class="exturl" data-url="aHR0cHM6Ly93d3cub3JhY2xlLmNvbS9qYXZhL3RlY2hub2xvZ2llcy9qYXZhc2UtamRrOC1kb3dubG9hZHMuaHRtbA==">Oracle官方下载地址<i class="fa fa-external-link-alt"></i></span><br>ps: 下载<code>Linux x64 Compressed Archive</code>这个版本，好像需要注册帐号，登录才能下载</p>
-</li>
-<li><p><span class="exturl" data-url="aHR0cHM6Ly9wYW4uYmFpZHUuY29tL3MvMXBLZXVVV1Rjb1dPWEJTOHUwVXhfUkE=">百度网盘<i class="fa fa-external-link-alt"></i></span><br>提取码：iouq<br>我也想用蓝奏云，无奈这个包186m，上传超过100m的文件要充钱，我的钱拿去百度网盘自动续费了。。。</p>
-</li>
-</ul>
-<h1 id="3-建立目录并解压文件"><a href="#3-建立目录并解压文件" class="headerlink" title="3. 建立目录并解压文件"></a>3. 建立目录并解压文件</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mkdir -p &#x2F;usr&#x2F;local&#x2F;java</span><br><span class="line">sudo cp jdk-8u251-linux-x64.tar.gz &#x2F;usr&#x2F;local&#x2F;java</span><br><span class="line">cd &#x2F;usr&#x2F;local&#x2F;java</span><br><span class="line">sudo tar xzvf jdk-8u251-linux-x64.tar.gz</span><br></pre></td></tr></table></figure>
-
-<h1 id="4-配置环境变量"><a href="#4-配置环境变量" class="headerlink" title="4. 配置环境变量"></a>4. 配置环境变量</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mousepad &#x2F;etc&#x2F;profile</span><br><span class="line"># 复制以下代码到文件结尾</span><br><span class="line">JAVA_HOME&#x3D;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251</span><br><span class="line">PATH&#x3D;$PATH:$HOME&#x2F;bin:$JAVA_HOME&#x2F;bin</span><br><span class="line">export JAVA_HOME</span><br><span class="line">export PATH</span><br></pre></td></tr></table></figure>
-
-<h1 id="5-告诉系统Java的位置"><a href="#5-告诉系统Java的位置" class="headerlink" title="5. 告诉系统Java的位置"></a>5. 告诉系统Java的位置</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo update-alternatives --install &quot;&#x2F;usr&#x2F;bin&#x2F;java&quot; &quot;java&quot; &quot;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;java&quot; 1</span><br><span class="line">sudo update-alternatives --install &quot;&#x2F;usr&#x2F;bin&#x2F;javac&quot; &quot;javac&quot; &quot;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javac&quot; 1</span><br><span class="line">sudo update-alternatives --install &quot;&#x2F;usr&#x2F;bin&#x2F;javaws&quot; &quot;javaws&quot; &quot;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javaws&quot; 1</span><br></pre></td></tr></table></figure>
-
-<h1 id="6-设置为默认JDK"><a href="#6-设置为默认JDK" class="headerlink" title="6. 设置为默认JDK"></a>6. 设置为默认JDK</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo update-alternatives --set java &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;java</span><br><span class="line">sudo update-alternatives --set javac &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javac</span><br><span class="line">sudo update-alternatives --set javaws &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javaws</span><br></pre></td></tr></table></figure>
-
-<h1 id="7-重新载入profile"><a href="#7-重新载入profile" class="headerlink" title="7. 重新载入profile"></a>7. 重新载入profile</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">source &#x2F;etc&#x2F;profile</span><br></pre></td></tr></table></figure>
-
-<h1 id="8-验证是否安装成功"><a href="#8-验证是否安装成功" class="headerlink" title="8. 验证是否安装成功"></a>8. 验证是否安装成功</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">java -version</span><br><span class="line">javac -version</span><br></pre></td></tr></table></figure>
-<img src="/archives/9111/3.png" class="">
-
-<p>参考链接：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI5MzQzMjAxL2FydGljbGUvZGV0YWlscy81MTkyNjQzMA==">kali（ubuntu）linux Oracle jdk 8安装<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <categories>
-        <category>web安全</category>
-      </categories>
-      <tags>
-        <tag>Kali Linux</tag>
-        <tag>jdk</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Kali配置问题汇总</title>
-    <url>/archives/53005.html</url>
-    <content><![CDATA[<h1 id="Q1：E-Sub-process-usr-bin-dpkg-returned-an-error-code-1"><a href="#Q1：E-Sub-process-usr-bin-dpkg-returned-an-error-code-1" class="headerlink" title="Q1：E: Sub-process /usr/bin/dpkg returned an error code (1)"></a>Q1：E: Sub-process /usr/bin/dpkg returned an error code (1)</h1><img src="/archives/53005/firmware.png" class="">
-<p>解决方法：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mousepad &#x2F;var&#x2F;lib&#x2F;dpkg&#x2F;status</span><br></pre></td></tr></table></figure>
-<p>删除发生错误的包即可</p>
-<img src="/archives/53005/a1.png" class="">
-
-<h1 id="Q2：缺少工具"><a href="#Q2：缺少工具" class="headerlink" title="Q2：缺少工具"></a>Q2：缺少工具</h1><p>解决方法：</p>
-<ol>
-<li>直接使用<code>apt-get</code>进行安装</li>
-<li>安装工具集<br>Kali Linux 2019.03开始对默认工具集进行重大更改，默认工具集将分为三个主要类别<br>kali-linux-default，渗透测试人员必不可少的工具<br>kali-linux-large，面对一系列更广泛又不寻常的情况的渗透测试<br>kali-linux-everything，所有黑客工具<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get install -y kali-linux-everything</span><br></pre></td></tr></table></figure>
-<img src="/archives/53005/a2.png" class="">
-
-</li>
-</ol>
-<h1 id="Q3：如何在kali上使用破解版burpsuite"><a href="#Q3：如何在kali上使用破解版burpsuite" class="headerlink" title="Q3：如何在kali上使用破解版burpsuite"></a>Q3：如何在kali上使用破解版burpsuite</h1><div class="note info no-icon">
-            <p>准备工作：<br><a href="https://z0sen.xyz/archives/9111.html">配置好jdk</a><br><span class="exturl" data-url="aHR0cHM6Ly9wYW4uYmFpZHUuY29tL3MvMXdvUWJmYUdrUjdJQnc5OFVCc2ppa3c=">Burpsuite<i class="fa fa-external-link-alt"></i></span> 提取码:gm3i</p>
-          </div>
-<h2 id="1-将burpsuite移动到-usr-bin-文件夹下"><a href="#1-将burpsuite移动到-usr-bin-文件夹下" class="headerlink" title="1. 将burpsuite移动到/usr/bin/文件夹下"></a>1. 将burpsuite移动到/usr/bin/文件夹下</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mv burp-loader-keygen.jar burpsuite_pro_v1.7.37.jar -t &#x2F;usr&#x2F;bin&#x2F;</span><br></pre></td></tr></table></figure>
-<h2 id="2-编写运行脚本"><a href="#2-编写运行脚本" class="headerlink" title="2. 编写运行脚本"></a>2. 编写运行脚本</h2><ul>
-<li>先删除自带的免费burpsuite<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo rm -rf burpsuite</span><br></pre></td></tr></table></figure></li>
-<li>编写脚本<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mousepad burpsuite</span><br><span class="line">#写入如下脚本并保存</span><br><span class="line">#!&#x2F;bin&#x2F;sh</span><br><span class="line">java -Xbootclasspath&#x2F;p:&#x2F;usr&#x2F;bin&#x2F;burp-loader-keygen.jar -jar &#x2F;usr&#x2F;bin&#x2F;burpsuite_pro_v1.7.37.jar</span><br></pre></td></tr></table></figure>
-<img src="/archives/53005/burp1.png" class="">
-保存退出后赋予权限<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo chmod +x burpsuite</span><br></pre></td></tr></table></figure></li>
-<li>先运行一次loader激活burpsuite<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo burp-loader-keygen.jar</span><br></pre></td></tr></table></figure>
-ps:如果是xfce桌面环境需要在编辑完快捷方式之后在菜单栏中打开burpsuite然后复制loader中的字段去激活，而不是直接用loader去run<h2 id="3-编辑快捷方式"><a href="#3-编辑快捷方式" class="headerlink" title="3. 编辑快捷方式"></a>3. 编辑快捷方式</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;share&#x2F;applications</span><br><span class="line">sudo mousepad kali-burpsuite.desktop</span><br><span class="line">将Exec&#x3D;sh -c &quot;java -jar &#x2F;usr&#x2F;bin&#x2F;burpsuite&quot;改为Exec&#x3D;sh -c &quot;&#x2F;usr&#x2F;bin&#x2F;burpsuite&quot;</span><br></pre></td></tr></table></figure>
-之后就可以通过快捷方式运行了</li>
-</ul>
-<h1 id="Q4：kali修改DNS"><a href="#Q4：kali修改DNS" class="headerlink" title="Q4：kali修改DNS"></a>Q4：kali修改DNS</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#编辑文件</span><br><span class="line">sudo mousepad &#x2F;etc&#x2F;resolv.conf</span><br><span class="line"></span><br><span class="line">#添加DNS</span><br><span class="line">nameserver 114.114.114.114</span><br><span class="line">nameserver 8.8.8.8</span><br></pre></td></tr></table></figure>
-
-<h1 id="Q5：kali怎么使用ssr"><a href="#Q5：kali怎么使用ssr" class="headerlink" title="Q5：kali怎么使用ssr"></a>Q5：kali怎么使用ssr</h1><p>这里直接pass掉图形化的electron-ssr，我就没成功运行过<br>下面来介绍一下通过脚本运行ssr实现科学上网</p>
-<h2 id="1-下载安装脚本并赋予权限"><a href="#1-下载安装脚本并赋予权限" class="headerlink" title="1. 下载安装脚本并赋予权限"></a>1. 下载安装脚本并赋予权限</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;onlyless.github.io&#x2F;ssr</span><br><span class="line">sudo mv ssr &#x2F;usr&#x2F;local&#x2F;bin</span><br><span class="line">sudo chmod 766 &#x2F;usr&#x2F;local&#x2F;bin&#x2F;ssr</span><br></pre></td></tr></table></figure>
-<img src="/archives/53005/ssr1.png" class="">
-
-<h2 id="2-安装ssr"><a href="#2-安装ssr" class="headerlink" title="2. 安装ssr"></a>2. 安装ssr</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo ssr install</span><br></pre></td></tr></table></figure>
-<p>这里安装有点慢，添加<code>8.8.8.8</code>的DNS会快点</p>
-<h2 id="3-ssr配置"><a href="#3-ssr配置" class="headerlink" title="3. ssr配置"></a>3. ssr配置</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;share&#x2F;shadowsocksr&#x2F;</span><br><span class="line">sudo mousepad config.json</span><br></pre></td></tr></table></figure>
-<img src="/archives/53005/ssr2.png" class="">
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;: &quot;0.0.0.0&quot;,	&#x2F;&#x2F;服务器IP地址</span><br><span class="line">    &quot;server_ipv6&quot;: &quot;::&quot;,</span><br><span class="line">    &quot;server_port&quot;: 8388,	&#x2F;&#x2F;服务器端口</span><br><span class="line">    &quot;local_address&quot;: &quot;127.0.0.1&quot;, </span><br><span class="line">    &quot;local_port&quot;: 1080,</span><br><span class="line"></span><br><span class="line">    &quot;password&quot;: &quot;m&quot;,		&#x2F;&#x2F;密码</span><br><span class="line">    &quot;method&quot;: &quot;aes-128-ctr&quot;,	&#x2F;&#x2F;加密</span><br><span class="line">    &quot;protocol&quot;: &quot;auth_aes128_md5&quot;,	&#x2F;&#x2F;协议</span><br><span class="line">    &quot;protocol_param&quot;: &quot;&quot;,			&#x2F;&#x2F;协议参数</span><br><span class="line">    &quot;obfs&quot;: &quot;plain&quot;,	&#x2F;&#x2F;混淆</span><br><span class="line">    &quot;obfs_param&quot;: &quot;&quot;,	&#x2F;&#x2F;混淆参数</span><br><span class="line">    &quot;speed_limit_per_con&quot;: 0,</span><br><span class="line">    &quot;speed_limit_per_user&quot;: 0,</span><br><span class="line"></span><br><span class="line">    &quot;additional_ports&quot; : &#123;&#125;, </span><br><span class="line">    &quot;additional_ports_only&quot; : false, </span><br><span class="line">    &quot;timeout&quot;: 120,</span><br><span class="line">    &quot;udp_timeout&quot;: 60,</span><br><span class="line">    &quot;dns_ipv6&quot;: false,</span><br><span class="line">    &quot;connect_verbose_info&quot;: 0,</span><br><span class="line">    &quot;redirect&quot;: &quot;&quot;,</span><br><span class="line">    &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>根据自己的节点信息进行修改之后保存</p>
-<h2 id="4-浏览器安装代理插件Proxy-SwitchyOmega"><a href="#4-浏览器安装代理插件Proxy-SwitchyOmega" class="headerlink" title="4. 浏览器安装代理插件Proxy SwitchyOmega"></a>4. 浏览器安装代理插件Proxy SwitchyOmega</h2><p>火狐浏览器-附加组件中搜索安装即可<br>配置如图</p>
-<img src="/archives/53005/ssr3.png" class="">
-<p>之后在终端键入<code>ssr start</code>，浏览器切换代理为proxy即可使用</p>
-<img src="/archives/53005/ssr4.png" class="">
-
-<h1 id="Q6-给git设置代理"><a href="#Q6-给git设置代理" class="headerlink" title="Q6:给git设置代理"></a>Q6:给git设置代理</h1><h2 id="1-设置全局代理"><a href="#1-设置全局代理" class="headerlink" title="1.设置全局代理"></a>1.设置全局代理</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git config --global http.proxy &#39;socks5:&#x2F;&#x2F;127.0.0.1:1080&#39;</span><br><span class="line">git config --global https.proxy &#39;socks5:&#x2F;&#x2F;127.0.0.1:1080&#39;</span><br></pre></td></tr></table></figure>
-<h2 id="2-设置针对github-com的全局代理"><a href="#2-设置针对github-com的全局代理" class="headerlink" title="2.设置针对github.com的全局代理"></a>2.设置针对github.com的全局代理</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#只对github.com</span><br><span class="line">git config --global http.https:&#x2F;&#x2F;github.com.proxy socks5:&#x2F;&#x2F;127.0.0.1:1080</span><br><span class="line"></span><br><span class="line">#取消代理</span><br><span class="line">git config --global --unset http.https:&#x2F;&#x2F;github.com.proxy</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>web安全</category>
-      </categories>
-      <tags>
-        <tag>Kali Linux</tag>
       </tags>
   </entry>
   <entry>
