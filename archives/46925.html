@@ -226,21 +226,31 @@
 
     </div>
   </div>
-<div id="tp-weather-widget"></div>
-  <script>
-    (function(a,h,g,f,e,d,c,b){b=function(){d=h.createElement(g);c=h.getElementsByTagName(g)[0];d.src=e;d.charset="utf-8";d.async=1;c.parentNode.insertBefore(d,c)};a["SeniverseWeatherWidgetObject"]=f;a[f]||(a[f]=function(){(a[f].q=a[f].q||[]).push(arguments)});a[f].l=+new Date();if(a.attachEvent){a.attachEvent("onload",b)}else{a.addEventListener("load",b,false)}}(window,document,"script","SeniverseWeatherWidget","//cdn.sencdn.com/widget2/static/js/bundle.js?t="+parseInt((new Date().getTime() / 100000000).toString(),10)));
-    window.SeniverseWeatherWidget('show', {
-      flavor: "slim",
-      location: "WX4FBXXFKE4F",
-      geolocation: true,
-      language: "zh-Hans",
-      unit: "c",
-      theme: "auto",
-      token: "4a75f5fb-0844-46d5-b5c4-0113f5153fcc",
-      hover: "disabled",
-      container: "tp-weather-widget"
-    })
-  </script>
+<div id="weather-v2-plugin-simple"></div>
+<script>
+WIDGET = {
+  CONFIG: {
+    "modules": "102",
+    "background": 1,
+    "tmpColor": "FFFFFF",
+    "tmpSize": "15",
+    "cityColor": "FFFFFF",
+    "citySize": "15",
+    "aqiSize": 16,
+    "weatherIconSize": "22",
+    "alertIconSize": 18,
+    "padding": "10px 10px 10px 10px",
+    "shadow": "1",
+    "language": "auto",
+    "borderRadius": 5,
+    "fixed": "false",
+    "vertical": "middle",
+    "horizontal": "center",
+    "key": "UzyzkSE3DB"
+  }
+}
+</script>
+<script src="https://apip.weatherdt.com/simple/static/js/weather-simple-common.js?v=2.0"></script>
 </div>
     </header>
 
