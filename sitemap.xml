@@ -123,6 +123,13 @@
   </url>
   
   <url>
+    <loc>https://z0sen.xyz/tags/Docker/</loc>
+    <lastmod>2020-10-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://z0sen.xyz/tags/Ubuntu/</loc>
     <lastmod>2020-10-22</lastmod>
     <changefreq>daily</changefreq>
@@ -131,13 +138,6 @@
   
   <url>
     <loc>https://z0sen.xyz/tags/Markdown/</loc>
-    <lastmod>2020-10-22</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://z0sen.xyz/tags/Docker/</loc>
     <lastmod>2020-10-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>

