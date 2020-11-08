@@ -23,11 +23,11 @@
 
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"z0sen.xyz","root":"/","scheme":"Gemini","version":"8.0.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+    var CONFIG = {"hostname":"z0sen.xyz","root":"/","scheme":"Gemini","version":"8.0.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
 
   <meta name="description" content="此文用来汇总使用kali过程中遇到的所有问题，永久更新">
@@ -417,17 +417,17 @@ WIDGET = {FID: 'KchzQlUa1d'}
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="Q1：E-Sub-process-usr-bin-dpkg-returned-an-error-code-1"><a href="#Q1：E-Sub-process-usr-bin-dpkg-returned-an-error-code-1" class="headerlink" title="Q1：E: Sub-process /usr/bin/dpkg returned an error code (1)"></a>Q1：E: Sub-process /usr/bin/dpkg returned an error code (1)</h1><img data-src="/archives/53005/firmware.png" class="">
+        <h1 id="Q1：E-Sub-process-usr-bin-dpkg-returned-an-error-code-1"><a href="#Q1：E-Sub-process-usr-bin-dpkg-returned-an-error-code-1" class="headerlink" title="Q1：E: Sub-process /usr/bin/dpkg returned an error code (1)"></a>Q1：E: Sub-process /usr/bin/dpkg returned an error code (1)</h1><img src="/archives/53005/firmware.png" class="">
 <p>解决方法：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mousepad &#x2F;var&#x2F;lib&#x2F;dpkg&#x2F;status</span><br></pre></td></tr></table></figure>
 <p>删除发生错误的包即可</p>
-<img data-src="/archives/53005/a1.png" class="">
+<img src="/archives/53005/a1.png" class="">
 
 <h1 id="Q2：缺少工具"><a href="#Q2：缺少工具" class="headerlink" title="Q2：缺少工具"></a>Q2：缺少工具</h1><p>解决方法：</p>
 <ol>
 <li>直接使用<code>apt-get</code>进行安装</li>
 <li>安装工具集<br>Kali Linux 2019.03开始对默认工具集进行重大更改，默认工具集将分为三个主要类别<br>kali-linux-default，渗透测试人员必不可少的工具<br>kali-linux-large，面对一系列更广泛又不寻常的情况的渗透测试<br>kali-linux-everything，所有黑客工具<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install -y kali-linux-everything</span><br></pre></td></tr></table></figure>
-<img data-src="/archives/53005/a2.png" class="">
+<img src="/archives/53005/a2.png" class="">
 
 </li>
 </ol>
@@ -437,7 +437,7 @@ WIDGET = {FID: 'KchzQlUa1d'}
 <h2 id="2-编写运行脚本"><a href="#2-编写运行脚本" class="headerlink" title="2. 编写运行脚本"></a>2. 编写运行脚本</h2><ul>
 <li>先删除自带的免费burpsuite<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rm -rf burpsuite</span><br></pre></td></tr></table></figure></li>
 <li>编写脚本<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo mousepad burpsuite</span><br><span class="line">#写入如下脚本并保存</span><br><span class="line">#!&#x2F;bin&#x2F;sh</span><br><span class="line">java -Xbootclasspath&#x2F;p:&#x2F;usr&#x2F;bin&#x2F;burp-loader-keygen.jar -jar &#x2F;usr&#x2F;bin&#x2F;burpsuite_pro_v1.7.37.jar</span><br></pre></td></tr></table></figure>
-<img data-src="/archives/53005/burp1.png" class="">
+<img src="/archives/53005/burp1.png" class="">
 保存退出后赋予权限<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod +x burpsuite</span><br></pre></td></tr></table></figure></li>
 <li>先运行一次loader激活burpsuite<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo burp-loader-keygen.jar</span><br></pre></td></tr></table></figure>
 ps:如果是xfce桌面环境需要在编辑完快捷方式之后在菜单栏中打开burpsuite然后复制loader中的字段去激活，而不是直接用loader去run<h2 id="3-编辑快捷方式"><a href="#3-编辑快捷方式" class="headerlink" title="3. 编辑快捷方式"></a>3. 编辑快捷方式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;share&#x2F;applications</span><br><span class="line">sudo mousepad kali-burpsuite.desktop</span><br><span class="line">将Exec&#x3D;sh -c &quot;java -jar &#x2F;usr&#x2F;bin&#x2F;burpsuite&quot;改为Exec&#x3D;sh -c &quot;&#x2F;usr&#x2F;bin&#x2F;burpsuite&quot;</span><br></pre></td></tr></table></figure>
@@ -447,18 +447,18 @@ ps:如果是xfce桌面环境需要在编辑完快捷方式之后在菜单栏中�
 
 <h1 id="Q5：kali怎么使用ssr"><a href="#Q5：kali怎么使用ssr" class="headerlink" title="Q5：kali怎么使用ssr"></a>Q5：kali怎么使用ssr</h1><p>这里直接pass掉图形化的electron-ssr，我就没成功运行过<br>下面来介绍一下通过脚本运行ssr实现科学上网</p>
 <h2 id="1-下载安装脚本并赋予权限"><a href="#1-下载安装脚本并赋予权限" class="headerlink" title="1. 下载安装脚本并赋予权限"></a>1. 下载安装脚本并赋予权限</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;onlyless.github.io&#x2F;ssr</span><br><span class="line">sudo mv ssr &#x2F;usr&#x2F;local&#x2F;bin</span><br><span class="line">sudo chmod 766 &#x2F;usr&#x2F;local&#x2F;bin&#x2F;ssr</span><br></pre></td></tr></table></figure>
-<img data-src="/archives/53005/ssr1.png" class="">
+<img src="/archives/53005/ssr1.png" class="">
 
 <h2 id="2-安装ssr"><a href="#2-安装ssr" class="headerlink" title="2. 安装ssr"></a>2. 安装ssr</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ssr install</span><br></pre></td></tr></table></figure>
 <p>这里安装有点慢，添加<code>8.8.8.8</code>的DNS会快点</p>
 <h2 id="3-ssr配置"><a href="#3-ssr配置" class="headerlink" title="3. ssr配置"></a>3. ssr配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;share&#x2F;shadowsocksr&#x2F;</span><br><span class="line">sudo mousepad config.json</span><br></pre></td></tr></table></figure>
-<img data-src="/archives/53005/ssr2.png" class="">
+<img src="/archives/53005/ssr2.png" class="">
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;: &quot;0.0.0.0&quot;,	&#x2F;&#x2F;服务器IP地址</span><br><span class="line">    &quot;server_ipv6&quot;: &quot;::&quot;,</span><br><span class="line">    &quot;server_port&quot;: 8388,	&#x2F;&#x2F;服务器端口</span><br><span class="line">    &quot;local_address&quot;: &quot;127.0.0.1&quot;, </span><br><span class="line">    &quot;local_port&quot;: 1080,</span><br><span class="line"></span><br><span class="line">    &quot;password&quot;: &quot;m&quot;,		&#x2F;&#x2F;密码</span><br><span class="line">    &quot;method&quot;: &quot;aes-128-ctr&quot;,	&#x2F;&#x2F;加密</span><br><span class="line">    &quot;protocol&quot;: &quot;auth_aes128_md5&quot;,	&#x2F;&#x2F;协议</span><br><span class="line">    &quot;protocol_param&quot;: &quot;&quot;,			&#x2F;&#x2F;协议参数</span><br><span class="line">    &quot;obfs&quot;: &quot;plain&quot;,	&#x2F;&#x2F;混淆</span><br><span class="line">    &quot;obfs_param&quot;: &quot;&quot;,	&#x2F;&#x2F;混淆参数</span><br><span class="line">    &quot;speed_limit_per_con&quot;: 0,</span><br><span class="line">    &quot;speed_limit_per_user&quot;: 0,</span><br><span class="line"></span><br><span class="line">    &quot;additional_ports&quot; : &#123;&#125;, </span><br><span class="line">    &quot;additional_ports_only&quot; : false, </span><br><span class="line">    &quot;timeout&quot;: 120,</span><br><span class="line">    &quot;udp_timeout&quot;: 60,</span><br><span class="line">    &quot;dns_ipv6&quot;: false,</span><br><span class="line">    &quot;connect_verbose_info&quot;: 0,</span><br><span class="line">    &quot;redirect&quot;: &quot;&quot;,</span><br><span class="line">    &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>根据自己的节点信息进行修改之后保存</p>
 <h2 id="4-浏览器安装代理插件Proxy-SwitchyOmega"><a href="#4-浏览器安装代理插件Proxy-SwitchyOmega" class="headerlink" title="4. 浏览器安装代理插件Proxy SwitchyOmega"></a>4. 浏览器安装代理插件Proxy SwitchyOmega</h2><p>火狐浏览器-附加组件中搜索安装即可<br>配置如图</p>
-<img data-src="/archives/53005/ssr3.png" class="">
+<img src="/archives/53005/ssr3.png" class="">
 <p>之后在终端键入<code>ssr start</code>，浏览器切换代理为proxy即可使用</p>
-<img data-src="/archives/53005/ssr4.png" class="">
+<img src="/archives/53005/ssr4.png" class="">
 
 <h1 id="Q6-给git设置代理"><a href="#Q6-给git设置代理" class="headerlink" title="Q6:给git设置代理"></a>Q6:给git设置代理</h1><h2 id="1-设置全局代理"><a href="#1-设置全局代理" class="headerlink" title="1.设置全局代理"></a>1.设置全局代理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global http.proxy &#39;socks5:&#x2F;&#x2F;127.0.0.1:1080&#39;</span><br><span class="line">git config --global https.proxy &#39;socks5:&#x2F;&#x2F;127.0.0.1:1080&#39;</span><br></pre></td></tr></table></figure>
 <h2 id="2-设置针对github-com的全局代理"><a href="#2-设置针对github-com的全局代理" class="headerlink" title="2.设置针对github.com的全局代理"></a>2.设置针对github.com的全局代理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#只对github.com</span><br><span class="line">git config --global http.https:&#x2F;&#x2F;github.com.proxy socks5:&#x2F;&#x2F;127.0.0.1:1080</span><br><span class="line"></span><br><span class="line">#取消代理</span><br><span class="line">git config --global --unset http.https:&#x2F;&#x2F;github.com.proxy</span><br></pre></td></tr></table></figure>
@@ -595,9 +595,8 @@ ps:如果是xfce桌面环境需要在编辑完快捷方式之后在菜单栏中�
   
   <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
   <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
 <script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
   <script>
 var pjax = new Pjax({
@@ -678,24 +677,14 @@ document.addEventListener('pjax:success', () => {
   
 
   
-  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
-  <script>
-      window.addEventListener('load', () => {
-      quicklink.listen({
-        timeout : 3000,
-        priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'https://z0sen.xyz/archives/53005.html',]
-      });
-      });
-  </script>
 
 <script>
 NexT.utils.loadComments('#valine-comments', () => {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js', () => {
-    new Valine(Object.assign({"enable":true,"appId":"eSShQPVz996SWeAvav1vBFQU-9Nh9j0Va","appKey":"X4SopVLoPcMmYFNvszxFG7YX","serverURLs":null,"placeholder":"想叭叭啥，快说","avatar":"wavatar","meta":["nick","mail","link"],"pageSize":10,"lang":"zh-cn","visitor":false,"comment_count":true,"recordIP":false,"enableQQ":false,"requiredFields":[]}, {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({"enable":true,"appId":"30wbW9j8uvmQHQGEBYkCavD1-9Nh9j0Va","appKey":"sLxs5Ji2tMFfCyfzXn4MiRAy","serverURLs":"https://30wbw9j8.lc-cn-e1-shared.com","placeholder":"想叭叭啥，快说","avatar":"wavatar","meta":["nick","mail","link"],"pageSize":10,"lang":"zh-cn","visitor":false,"comment_count":true,"recordIP":false,"enableQQ":false,"requiredFields":[]}, {
       el: '#valine-comments',
       path: "/archives/53005.html",
-      serverURLs: "https://esshqpvz.api.lncldglobal.com"
+      serverURLs: "https://30wbw9j8.lc-cn-e1-shared.com"
     }));
   }, window.Valine);
 });

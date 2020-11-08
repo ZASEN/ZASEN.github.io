@@ -23,11 +23,11 @@
 
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"z0sen.xyz","root":"/","scheme":"Gemini","version":"8.0.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+    var CONFIG = {"hostname":"z0sen.xyz","root":"/","scheme":"Gemini","version":"8.0.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
 
   <meta name="description" content="JDK全称Java SE Development kit(JDK)，即Java标准版开发包，是Oracle提供的一套用于开发Java应用程序的开发包，它提供编译，运行Java程序所需要的各种工具和资源，包括Java编译器，Java运行时环境，以及常用的Java类库等。">
@@ -413,12 +413,12 @@ WIDGET = {FID: 'KchzQlUa1d'}
     
     
     <div class="post-body" itemprop="articleBody">
-        <div class="note info no-icon"><h1 id="为啥突然写这篇文章？"><a href="#为啥突然写这篇文章？" class="headerlink" title="为啥突然写这篇文章？"></a>为啥突然写这篇文章？</h1><p>今天打开尘封已久的 Burpsuite 时给我来了个弹窗，如下图<br><img data-src="/archives/9111/1.png" class=""><br>根据博主的英语水平我jio的它说的是：你的jre版本我们(burp)没有测试过，你用的时候阔能会出毛病。<br>emmm，然后事实证明确实出了毛病，使用的时候发现端口监听勾不上了</p>
+        <div class="note info no-icon"><h1 id="为啥突然写这篇文章？"><a href="#为啥突然写这篇文章？" class="headerlink" title="为啥突然写这篇文章？"></a>为啥突然写这篇文章？</h1><p>今天打开尘封已久的 Burpsuite 时给我来了个弹窗，如下图<br><img src="/archives/9111/1.png" class=""><br>根据博主的英语水平我jio的它说的是：你的jre版本我们(burp)没有测试过，你用的时候阔能会出毛病。<br>emmm，然后事实证明确实出了毛病，使用的时候发现端口监听勾不上了</p>
 </div>
 <p>第一时间当然是查看当前的java版本</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
 <p>然后发现丫的我就没见过这版本号</p>
-<img data-src="/archives/9111/2.png" class="">
+<img src="/archives/9111/2.png" class="">
 <p>后来查了一下啥是OpenJDK，得到了这篇文章：<span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC80NDFhYTFhOTc2YjM=">OpenJDK与JDK的区别分析<i class="fa fa-external-link-alt"></i></span></p>
 <p>话不多说，上正题</p>
 <h1 id="1-卸载原装jdk"><a href="#1-卸载原装jdk" class="headerlink" title="1. 卸载原装jdk"></a>1. 卸载原装jdk</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">which java  #查看JDK的安装路径</span><br><span class="line">sudo rm -rf &#x2F;usr&#x2F;bin&#x2F;java   # 这里的路径即为上一条命令返回的路径，自行修改</span><br></pre></td></tr></table></figure>
@@ -440,7 +440,7 @@ WIDGET = {FID: 'KchzQlUa1d'}
 <h1 id="7-重新载入profile"><a href="#7-重新载入profile" class="headerlink" title="7. 重新载入profile"></a>7. 重新载入profile</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source &#x2F;etc&#x2F;profile</span><br></pre></td></tr></table></figure>
 
 <h1 id="8-验证是否安装成功"><a href="#8-验证是否安装成功" class="headerlink" title="8. 验证是否安装成功"></a>8. 验证是否安装成功</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">java -version</span><br><span class="line">javac -version</span><br></pre></td></tr></table></figure>
-<img data-src="/archives/9111/3.png" class="">
+<img src="/archives/9111/3.png" class="">
 
 <p>参考链接：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI5MzQzMjAxL2FydGljbGUvZGV0YWlscy81MTkyNjQzMA==">kali（ubuntu）linux Oracle jdk 8安装<i class="fa fa-external-link-alt"></i></span></p>
 
@@ -578,9 +578,8 @@ WIDGET = {FID: 'KchzQlUa1d'}
   
   <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
   <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
 <script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
   <script>
 var pjax = new Pjax({
@@ -661,24 +660,14 @@ document.addEventListener('pjax:success', () => {
   
 
   
-  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
-  <script>
-      window.addEventListener('load', () => {
-      quicklink.listen({
-        timeout : 3000,
-        priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'https://z0sen.xyz/archives/9111.html',]
-      });
-      });
-  </script>
 
 <script>
 NexT.utils.loadComments('#valine-comments', () => {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js', () => {
-    new Valine(Object.assign({"enable":true,"appId":"eSShQPVz996SWeAvav1vBFQU-9Nh9j0Va","appKey":"X4SopVLoPcMmYFNvszxFG7YX","serverURLs":null,"placeholder":"想叭叭啥，快说","avatar":"wavatar","meta":["nick","mail","link"],"pageSize":10,"lang":"zh-cn","visitor":false,"comment_count":true,"recordIP":false,"enableQQ":false,"requiredFields":[]}, {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({"enable":true,"appId":"30wbW9j8uvmQHQGEBYkCavD1-9Nh9j0Va","appKey":"sLxs5Ji2tMFfCyfzXn4MiRAy","serverURLs":"https://30wbw9j8.lc-cn-e1-shared.com","placeholder":"想叭叭啥，快说","avatar":"wavatar","meta":["nick","mail","link"],"pageSize":10,"lang":"zh-cn","visitor":false,"comment_count":true,"recordIP":false,"enableQQ":false,"requiredFields":[]}, {
       el: '#valine-comments',
       path: "/archives/9111.html",
-      serverURLs: "https://esshqpvz.api.lncldglobal.com"
+      serverURLs: "https://30wbw9j8.lc-cn-e1-shared.com"
     }));
   }, window.Valine);
 });
